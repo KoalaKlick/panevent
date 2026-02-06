@@ -76,7 +76,7 @@
 /* Track (background of scrollbar) */
 ::-webkit-scrollbar-track {
   background-color: var(--color-layout-50);
-  /* bg-gray-100/90 */
+  /* bg-neutral-100/90 */
   border-radius: 9999px;
   /* rounded-full */
 }
@@ -85,7 +85,7 @@
 @media (prefers-color-scheme: dark) {
   ::-webkit-scrollbar-track {
     background-color: var(--color-layout-700);
-    /* dark:bg-gray-500 */
+    /* dark:bg-neutral-500 */
   }
 }
 

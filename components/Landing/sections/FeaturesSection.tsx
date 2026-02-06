@@ -6,8 +6,8 @@ export function FeaturesSection() {
     return (
         <Section id="features" as="section" contentClassName="py-20" className="scroll-mt-20">
             <div className="text-center mb-16">
-                <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Powerful Features for Every Event</h2>
-                <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                <h2 className="text-4xl font-bold text-neutral-900 dark:text-white mb-4">Powerful Features for Every Event</h2>
+                <p className="text-xl text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto">
                     Everything you need to create engaging, real-time events that captivate your audience.
                 </p>
             </div>

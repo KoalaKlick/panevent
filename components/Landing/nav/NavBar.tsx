@@ -137,8 +137,9 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
             } else {
                 setHidden(false)
             }
-            // Set scrolled state for background transparency
-            setScrolled(current > 10)
+            // Set scrolled state - true when past 100vh
+            const viewportHeight = globalThis.innerHeight || 0
+            setScrolled(current > viewportHeight)
         })
 
         // Combine refs
@@ -158,7 +159,7 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
             <motion.header
                 className={cn(
                     "fixed top-0 z-50 w-full px-4 md:px-6 transition-all delay-100 duration-300",
-                    scrolled ? "bg-background/95 backdrop-blur transition-colors" : "bg-transparent",
+                    scrolled ? "bg-white/95 backdrop-blur" : "bg-black/95 backdrop-blur",
                     className,
                 )}
                 ref={combinedRef}
@@ -211,7 +212,7 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                                 href={logoHref}
                                 className="flex items-center space-x-2 text-primary hover:text-primary/90 transition-colors cursor-pointer"
                             >
-                                <Logo className="h-10" />
+                                <img src="/logo.png" className="h-10 bg-black px-2" alt="logo"/>
 
                             </a>
                             {/* Navigation menu */}

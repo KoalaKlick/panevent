@@ -6,10 +6,10 @@ import { Check } from 'lucide-react'
 
 export function PricingSection() {
     return (
-        <Section id="pricing" as="section" contentClassName="py-20 bg-gray-50 dark:bg-gray-800" className="">
+        <Section id="pricing" as="section" contentClassName="py-20 bg-neutral-50 dark:bg-neutral-800" className="">
             <div className="text-center mb-16">
-                <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Simple, Transparent Pricing</h2>
-                <p className="text-xl text-gray-600 dark:text-gray-300">Choose the plan that fits your event needs</p>
+                <h2 className="text-4xl font-bold text-neutral-900 dark:text-white mb-4">Simple, Transparent Pricing</h2>
+                <p className="text-xl text-neutral-600 dark:text-neutral-300">Choose the plan that fits your event needs</p>
             </div>
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                 <Card>
