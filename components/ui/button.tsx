@@ -19,7 +19,7 @@ const buttonVariants = cva(
         tertiary:
           "bg-tertiary text-white hover:bg-tertiary/90",
         sepia:
-          "bg-sepia text-white hover:bg-sepia/90",
+          "bg-sepia-400 text-sepia-900 hover:bg-sepia-400/90",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",

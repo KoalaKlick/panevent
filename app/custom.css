@@ -153,3 +153,10 @@
   --animate-duration: 2000ms;
   --icon-primary: var(--color-primary-500);
 }
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}

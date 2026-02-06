@@ -14,8 +14,9 @@ import { cn } from "@/lib/utils"
 import { defaultNavigationLinks, type NavbarNavLink } from "@/lib/const/landing"
 import { Logo } from "@/components/shared/icon"
 import { Menu } from "lucide-react"
-import {PanAfricanDivider} from '@/components/shared/PanAficDivider'
+import { PanAfricanDivider } from '@/components/shared/PanAficDivider'
 import Image from "next/image"
+import PanafricanButton from "@/components/shared/PanafricanButton"
 
 export interface NavbarProps extends React.HTMLAttributes<HTMLElement> {
     logo?: React.ReactNode
@@ -41,7 +42,7 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
             navigationLinks = defaultNavigationLinks,
             signInText = "Sign In",
             signInHref = "#signin",
-            ctaText = "Get Started",
+            ctaText = "Become a Promoter",
             ctaHref = "#get-started",
             onSignInClick,
             onCtaClick,
@@ -177,9 +178,7 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                                 <PopoverTrigger asChild>
                                     <Button
                                         className={cn("group h-9 w-9 hover:bg-accent hover:text-accent-foreground",
-                                                 activeHref === link.href
-                                                            ? scrolled ? " text-sepia" : "bg-primary text-white"
-                                                            : scrolled ? "text-gray-700 hover:text-primary" : "text-gray-300 hover:text-white"
+                                            scrolled ? "text-gray-700 hover:text-primary" : "text-gray-300 hover:text-white"
                                         )}
                                         size="icon"
                                         variant="ghost"
@@ -217,7 +216,7 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                                 href={logoHref}
                                 className="flex items-center space-x-2 text-primary hover:text-primary/90 transition-colors cursor-pointer"
                             >
-                                <Image src="/logo.png" className="h-10 bg-black px-2" alt="logo" width={124.2} height={38.1}/>
+                                <Image src="/logo.png" className="h-10 bg-black px-2" alt="logo" width={124.2} height={38.1} />
 
                             </a>
                             {/* Navigation menu */}
@@ -230,17 +229,17 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                                                     href={link.href}
                                                     onClick={() => setActiveHref(link.href)}
                                                     className={cn(
-                                                        "group relative inline-flex w-max items-left justify-center rounded-md text-sm font-medium transition-colors focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer no-underline",
+                                                        "group relative inline-flex w-max items-left justify-center rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 cursor-pointer no-underline",
                                                         activeHref === link.href
                                                             ? scrolled ? " text-sepia" : "bg-primary text-white"
                                                             : scrolled ? "text-gray-700 hover:text-primary" : "text-gray-300 hover:text-white",
                                                     )}
                                                 >
                                                     {link.label}
-                                                    <PanAfricanDivider className={cn("absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 ease-out transform ", 
-                                                        activeHref === link.href 
-                                                            ? "w-full opacity-100" 
-                                                            : "group-hover:w-full group-hover:opacity-50"
+                                                    <PanAfricanDivider className={cn("absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 ease-out transform ",
+                                                        activeHref === link.href
+                                                            ? "w-full opacity-100"
+                                                            : "hover:text-sepia-200"
                                                     )} />
                                                 </a>
                                             </NavigationMenuItem>
@@ -253,20 +252,7 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                     {/* Right side */}
                     <div className="flex items-center gap-3">
                         <Button
-                            className="text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-                            onClick={e => {
-                                e.preventDefault()
-                                if (onSignInClick) {
-                                    onSignInClick()
-                                }
-                            }}
-                            size="sm"
-                            variant="ghost"
-                        >
-                            {signInText}
-                        </Button>
-                        <Button
-                            className="text-sm font-medium px-4 h-9 rounded-md shadow-sm"
+                            className="text-sm font-medium px-4 h-9 rounded-none shadow-sm"
                             onClick={e => {
                                 e.preventDefault()
                                 if (onCtaClick) {
@@ -274,9 +260,29 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                                 }
                             }}
                             size="sm"
+                            variant="sepia"
                         >
-                            {ctaText}
-                        </Button>
+                            {signInText}
+
+                        </Button>  
+                        <PanafricanButton
+                        dashArray="5 5"
+                        animated={true}
+                        animateOnHover={false}
+                        strokeWidth={1.5}
+                        borderRadius={0}
+                        animationDuration={2}
+                        className="bg-black rounded-none hover:bg-black/80 text-sepia-100 hover:text-sepia-200"
+                            onClick={e => {
+                                e.preventDefault()
+                                if (onSignInClick) {
+                                    onSignInClick()
+                                }
+                            }}
+                            variant="ghost"
+                        > {ctaText}
+                        </PanafricanButton>
+
                     </div>
                 </div>
             </motion.header>
