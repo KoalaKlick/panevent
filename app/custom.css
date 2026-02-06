@@ -1,0 +1,117 @@
+@theme inline {
+
+  --color-primary-50: #e6f4f6;
+  --color-primary-100: #cce9ed;
+  --color-primary-200: #99d3db;
+  --color-primary-300: #66bdc9;
+  --color-primary-400: #339bb0;
+  --color-primary-500: #0b6474;
+  --color-primary-600: #09505d;
+  --color-primary-700: #073c46;
+  --color-primary-800: #05282e;
+  --color-primary-900: #021417;
+  --color-primary-950: #010a0c;
+  --color-primary: var(--color-primary-500);
+
+  --color-secondary-50: oklch(0.977 0.014 308.299);
+  --color-secondary-100: oklch(0.946 0.033 307.174);
+  --color-secondary-200: oklch(0.902 0.063 306.703);
+  --color-secondary-300: oklch(0.827 0.119 306.383);
+  --color-secondary-400: oklch(0.714 0.203 305.504);
+  --color-secondary-500: oklch(0.627 0.265 303.9);
+  --color-secondary-600: oklch(0.558 0.288 302.321);
+  --color-secondary-700: oklch(0.496 0.265 301.924);
+  --color-secondary-800: oklch(0.438 0.218 303.724);
+  --color-secondary-900: oklch(0.381 0.176 304.987);
+  --color-secondary-950: oklch(0.291 0.149 302.717);
+  --color-secondary: var(--color-secondary-600);
+
+
+  --color-layout-50: oklch(0.98 0.005 234.699);
+  --color-layout-100: oklch(0.95 0.01 234.699);
+  --color-layout-200: oklch(0.91 0.015 234.699);
+  --color-layout-300: oklch(0.85 0.02 234.699);
+  --color-layout-400: oklch(0.75 0.03 234.699);
+  --color-layout-500: oklch(0.65 0.04 234.699);
+  --color-layout-600: oklch(0.55 0.05 234.699);
+  --color-layout-700: oklch(0.45 0.06 234.699);
+  --color-layout-800: oklch(0.35 0.07 234.699);
+  --color-layout-900: oklch(0.25 0.08 234.699);
+  --color-layout-950: oklch(0.15 0.09 234.699);
+  --color-layout: var(--color-layout-500);
+  
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+/* Track (background of scrollbar) */
+::-webkit-scrollbar-track {
+  background-color: var(--color-layout-50);
+  /* bg-gray-100/90 */
+  border-radius: 9999px;
+  /* rounded-full */
+}
+
+/* Dark mode track */
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-track {
+    background-color: var(--color-layout-700);
+    /* dark:bg-gray-500 */
+  }
+}
+
+/* Thumb (draggable part of the scrollbar) */
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-layout-200);
+  /* bg-primary-600 */
+  border-radius: 9999px;
+  /* rounded-full */
+  border: 3px solid var(--color-layout-200);
+  /* padding around thumb for aesthetic */
+}
+
+/* Dark mode thumb */
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-layout-400);
+    /* dark:bg-primary-400 */
+  }
+}
+
+/* Thumb hover state */
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-layout-400);
+  /* hover:bg-primary-400 */
+}
+
+/* Dark mode thumb hover */
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-layout-300);
+    /* hover:bg-primary-300 for better contrast in dark mode */
+  }
+}
+
+/* Text selection styles */
+::selection {
+  color: white;
+  /* text-white */
+  background-color: var(--color-primary-600);
+  /* bg-primary-600 */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+
+
+.icon {
+  color: var(--icon-primary);
+  --icon-secondary: orange;
+  --animate-duration: 2000ms;
+  --icon-primary: var(--color-primary-500);
+}
