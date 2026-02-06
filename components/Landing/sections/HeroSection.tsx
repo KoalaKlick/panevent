@@ -14,7 +14,7 @@ export function HeroSection() {
                 {/* Center panel - frosted glass over parent bg */}
                 <div className="w-full max-w-6xl z-10 relative  backdrop-sepia backdrop-blur-md flex items-center justify-center px-4 py-20">
                     <div className="max-w-4xl mx-auto text-center">
-                        <h1 className="text-5xl md:text-7xl font-bold text-neutral-900 dark:text-white mb-6 animate-fade-in">
+                        <h1 className="text-5xl md:text-7xl font-bold text-sepia-100 dark:text-white mb-6 animate-fade-in">
                             Create, Manage & Grow Events with <span className="text-primary">Real-Time Power</span>
                         </h1>
                         <p className="text-xl text-neutral-600 dark:text-neutral-300 mb-8 max-w-2xl mx-auto">

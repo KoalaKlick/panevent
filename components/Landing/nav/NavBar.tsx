@@ -176,7 +176,11 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button
-                                        className="group h-9 w-9 hover:bg-accent hover:text-accent-foreground"
+                                        className={cn("group h-9 w-9 hover:bg-accent hover:text-accent-foreground",
+                                                 activeHref === link.href
+                                                            ? scrolled ? " text-sepia" : "bg-primary text-white"
+                                                            : scrolled ? "text-gray-700 hover:text-primary" : "text-gray-300 hover:text-white"
+                                        )}
                                         size="icon"
                                         variant="ghost"
                                     >

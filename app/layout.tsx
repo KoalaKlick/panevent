@@ -15,10 +15,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "PanEvent",
   description: "Create, Manage & Grow Events with Real-Time Power",
+  manifest: "/manifest.json",
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: "/logo-sm.png",
+    shortcut: "/logo-sm.png",
+    apple: "/logo-sm.png",
   },
   openGraph: {
     title: "PanEvent",
@@ -40,6 +41,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" type="image/png" sizes="32x32" href="/logo-sm.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/logo-sm.png" />
+        <link rel="apple-touch-icon" href="/logo-sm.png" />
+        <link rel="shortcut icon" href="/logo-sm.png" />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#dc2626" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
