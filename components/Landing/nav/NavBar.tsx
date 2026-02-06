@@ -212,7 +212,7 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                                                 strokeWidth={1.5}
                                                 borderRadius={0}
                                                 animationDuration={2}
-                                                className="bg-black hidden sm:block rounded-none hover:bg-black/80 text-sepia-100 hover:text-sepia-200"
+                                                className="bg-black  sm:hidden rounded-none hover:bg-black/80 text-sepia-100 hover:text-sepia-200"
                                                 onClick={e => {
                                                     e.preventDefault()
                                                     if (onSignInClick) {
@@ -289,7 +289,7 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                             strokeWidth={1.5}
                             borderRadius={0}
                             animationDuration={2}
-                            className="bg-black sm:hidden rounded-none hover:bg-black/80 text-sepia-100 hover:text-sepia-200"
+                            className="bg-black hidden sm:block rounded-none hover:bg-black/80 text-sepia-100 hover:text-sepia-200"
                             onClick={e => {
                                 e.preventDefault()
                                 if (onSignInClick) {
