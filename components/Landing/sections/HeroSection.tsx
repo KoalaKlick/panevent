@@ -28,7 +28,7 @@ export function HeroSection() {
 {/* Hero image with split effect - grayscale left, color right */}
                     <div className="hidden md:block absolute  -right-48 bottom-0 h-96">
                         {/* The actual image */}
-                        <img className="h-96 w-auto" src="/landing/f.png" alt="Hero" />
+                        <img className="h-96 w-auto" src="/landing/hero-womam-1.webp" alt="Hero" />
                         {/* grayscale overlay - covers left portion */}
                         <div className="absolute inset-0 right-48 " />
                         {/* Color overlay - covers right w-48, no filter */}
