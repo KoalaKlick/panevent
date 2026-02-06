@@ -9,19 +9,40 @@ import { FooterSection } from '@/components/Landing/sections/FooterSection'
 import { Navbar } from '@/components/Landing/nav/NavBar'
 import { EventsSection } from '@/components/Landing/sections/events'
 
+// Pan-African divider component
+const PanAfricanDivider = () => (
+  <div className="flex h-2 w-full">
+    <div className="flex-1 bg-red-600" />
+    <div className="flex-1 bg-yellow-400" />
+    <div className="flex-1 bg-green-600" />
+  </div>
+)
+
 const page = () => {
   return (
-    <div className='bg-linear-to-br max-w-svw overflow-x-clip from-slate-50 to-white dark:from-gray-900 dark:to-gray-800 min-h-screen'>
+    <div className="flex flex-col max-w-svw overflow-x-clip min-h-screen bg-white">
       <Navbar />
       <HeroSection />
-      <FeaturesSection />
-      <HowItWorksSection />
-      <EventsSection/>
-      <TestimonialsSection />
-      <PricingSection />
-      <FAQSection />
-      <FinalCTASection />
-      <FooterSection />
+      
+      {/* Rest of sections wrapped with dividers */}
+      <div className="flex flex-col">
+        <PanAfricanDivider />
+        <FeaturesSection />
+        <PanAfricanDivider />
+        <HowItWorksSection />
+        <PanAfricanDivider />
+        <EventsSection />
+        <PanAfricanDivider />
+        <TestimonialsSection />
+        <PanAfricanDivider />
+        <PricingSection />
+        <PanAfricanDivider />
+        <FAQSection />
+        <PanAfricanDivider />
+        <FinalCTASection />
+        <PanAfricanDivider />
+        <FooterSection />
+      </div>
     </div>
   )
 }

@@ -28,8 +28,8 @@ export function EventGallery({ items, x, scrollProgress, containerRef }: EventGa
                 height: `max(100vh, ${scrollHeight}vh)`,
             }}
         >
-            {/* Scroll Progress Indicator */}
-            <div className="sticky  top-[calc(90svh)] left-[200svh] z-20 w-fit">
+            {/* Scroll Progress Indicator - Polygon with sides = items count */}
+            <div className="sticky top-[calc(90svh)] left-[200svh]  w-fit">
                 <svg
                     width="60"
                     height="60"
@@ -37,24 +37,40 @@ export function EventGallery({ items, x, scrollProgress, containerRef }: EventGa
                     className="-rotate-90"
                 >
                     <title>Scroll Progress Indicator</title>
-                    <circle
-                        cx="50"
-                        cy="50"
-                        r="30"
-                        pathLength="1"
-                        className="fill-none stroke-transparent stroke-[10%]"
-                    />
-                    <motion.circle
-                        cx="50"
-                        cy="50"
-                        r="30"
-                        pathLength="1"
-                        className="fill-none stroke-[var(--accent,#ff0088)] stroke-[10%]"
-                        style={{ pathLength: scrollProgress, strokeDashoffset: 0 }}
-                    />
+                    {(() => {
+                        const sides = items.length
+                        const cx = 50
+                        const cy = 50
+                        const r = 30
+                        // Generate polygon points and create a closed path
+                        const points = Array.from({ length: sides }, (_, i) => {
+                            const angle = (2 * Math.PI * i) / sides - Math.PI / 2
+                            return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) }
+                        })
+                        const pathD = points.map((p, i) =>
+                            `${i === 0 ? 'M' : 'L'} ${p.x},${p.y}`
+                        ).join(' ') + ' Z'
+
+                        return (
+                            <>
+                                <path
+                                    d={pathD}
+                                    className="fill-none stroke-[#1a1a1a] stroke-[3]"
+                                    strokeLinejoin="round"
+                                />
+                                <motion.path
+                                    d={pathD}
+                                    className="fill-none stroke-[var(--accent,#ff0088)] stroke-[3]"
+                                    strokeLinejoin="round"
+                                    pathLength="1"
+                                    style={{
+                                        pathLength: scrollProgress,
+                                    }}
+                                />
+                            </>
+                        )
+                    })()}
                 </svg>
-                <div className="text-white">                {JSON.stringify(Math.round(scrollProgress.get() * 100))}%
-                </div>
             </div>
 
             <div className="sticky top-0 mx-auto flex h-screen w-[400px] items-center justify-start overflow-visible max-sm:w-[280px] motion-reduce:relative motion-reduce:h-auto motion-reduce:w-full motion-reduce:overflow-x-auto motion-reduce:py-12">
@@ -63,7 +79,7 @@ export function EventGallery({ items, x, scrollProgress, containerRef }: EventGa
                     style={{
                         x,
                         // Total width = (itemWidth + gap) * (items - 1) for proper 0-100% mapping
-                        width: `calc((400px + 30px) * ${items.length - 1} + 400px)`,
+                        width: `calc((400px + 30px) * ${items.length - 1} )`,
                     }}
                 >
                     {items.map((item) => (

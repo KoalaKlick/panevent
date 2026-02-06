@@ -51,6 +51,7 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
         const [isMobile, setIsMobile] = useState(false)
         const [activeHref, setActiveHref] = useState("#")
         const [hidden, setHidden] = useState(false)
+        const [scrolled, setScrolled] = useState(false)
         const containerRef = useRef<HTMLElement>(null)
         const { scrollY } = useScroll()
 
@@ -136,6 +137,8 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
             } else {
                 setHidden(false)
             }
+            // Set scrolled state for background transparency
+            setScrolled(current > 10)
         })
 
         // Combine refs
@@ -154,7 +157,8 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
         return (
             <motion.header
                 className={cn(
-                    "sticky top-0 z-50 w-full   bg-background/95 backdrop-blur px-4 md:px-6 ",
+                    "fixed top-0 z-50 w-full px-4 md:px-6 transition-all delay-100 duration-300",
+                    scrolled ? "bg-background/95 backdrop-blur transition-colors" : "bg-transparent",
                     className,
                 )}
                 ref={combinedRef}
