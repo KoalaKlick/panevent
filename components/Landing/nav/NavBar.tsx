@@ -205,6 +205,23 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                                                     </a>
                                                 </NavigationMenuItem>
                                             ))}
+                                            <PanafricanButton
+                                                dashArray="5 5"
+                                                animated={true}
+                                                animateOnHover={false}
+                                                strokeWidth={1.5}
+                                                borderRadius={0}
+                                                animationDuration={2}
+                                                className="bg-black hidden sm:block rounded-none hover:bg-black/80 text-sepia-100 hover:text-sepia-200"
+                                                onClick={e => {
+                                                    e.preventDefault()
+                                                    if (onSignInClick) {
+                                                        onSignInClick()
+                                                    }
+                                                }}
+                                                variant="ghost"
+                                            > {ctaText}
+                                            </PanafricanButton>
                                         </NavigationMenuList>
                                     </NavigationMenu>
                                 </PopoverContent>
@@ -264,15 +281,15 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                         >
                             {signInText}
 
-                        </Button>  
+                        </Button>
                         <PanafricanButton
-                        dashArray="5 5"
-                        animated={true}
-                        animateOnHover={false}
-                        strokeWidth={1.5}
-                        borderRadius={0}
-                        animationDuration={2}
-                        className="bg-black rounded-none hover:bg-black/80 text-sepia-100 hover:text-sepia-200"
+                            dashArray="5 5"
+                            animated={true}
+                            animateOnHover={false}
+                            strokeWidth={1.5}
+                            borderRadius={0}
+                            animationDuration={2}
+                            className="bg-black sm:hidden rounded-none hover:bg-black/80 text-sepia-100 hover:text-sepia-200"
                             onClick={e => {
                                 e.preventDefault()
                                 if (onSignInClick) {
