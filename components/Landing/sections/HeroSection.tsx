@@ -12,7 +12,7 @@ export function HeroSection() {
                 <div className="w-2 md:w-2 bg- bg-fixed bg-[image:var(--bg-pan-african-stripes)]" />
 
                 {/* Center panel - frosted glass over parent bg */}
-                <div className="w-full max-w-6xl z-10 relative  backdrop-grayscale flex items-center justify-center px-4 py-20">
+                <div className="w-full max-w-6xl z-10 relative  backdrop-sepia backdrop-blur-md flex items-center justify-center px-4 py-20">
                     <div className="max-w-4xl mx-auto text-center">
                         <h1 className="text-5xl md:text-7xl font-bold text-neutral-900 dark:text-white mb-6 animate-fade-in">
                             Create, Manage & Grow Events with <span className="text-primary">Real-Time Power</span>
@@ -32,7 +32,7 @@ export function HeroSection() {
                         {/* grayscale overlay - covers left portion */}
                         <div className="absolute inset-0 right-48 " />
                         {/* Color overlay - covers right w-48, no filter */}
-                        <div className="absolute inset-0 left-auto backdrop-grayscale w-48" />
+                        <div className="absolute inset-0 left-auto backdrop-sepia w-48" />
                     </div>
                 </div>
 
