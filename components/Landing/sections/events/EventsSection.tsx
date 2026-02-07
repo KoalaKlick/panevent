@@ -33,12 +33,12 @@ export function EventsSection({
     return (
         <Section id="events" className="h-auto overflow-visible bg-primary-950 relative">
             {/* Sticky title that stays on top while gallery scrolls horizontally */}
-            <div className="sticky top-20 pt-10 md:pt-5 md:top-16 z-0 h-8rem ">
-                <h2 className="text-4xl md:text-6xl font-bold text-center text-primary-50 mb-1">
+            <div className="sticky top-16 md:top-16 z-20 py-6 bg-inherit">
+                <div className=" bg-primary-950/50 backdrop-blur-3xl w-fit mx-auto">   <h2 className="text-4xl md:text-6xl font-bold text-center text-primary-50 mb-1">
                     {title}
                 </h2>
-                <p className="text-center text-primary-200">Explore ongoing events and discover what's happening now.</p>
-            </div>
+                    <p className="text-center text-primary-200">Explore ongoing events and discover what's happening now.</p>
+                </div> </div>
             <EventGallery items={items} x={x} scrollProgress={scrollYProgress} containerRef={containerRef} />
             {/* <EventsOutro text={outroText} /> */}
         </Section>

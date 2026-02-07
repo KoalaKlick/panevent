@@ -23,7 +23,7 @@ export function EventGallery({ items, x, scrollProgress, containerRef }: EventGa
     return (
         <div
             ref={containerRef}
-            className="relative motion-reduce:h-auto max-md:h-(--scroll-height-mobile)! md:h-(--scroll-height)!"
+            className="relative motion-reduce:h-auto  max-md:h-(--scroll-height-mobile)! md:h-(--scroll-height)!"
             style={{
                 '--scroll-height-mobile': `max(100vh, ${scrollHeightMobile}vh)`,
                 '--scroll-height': `max(100vh, ${scrollHeight}vh)`,
@@ -83,7 +83,7 @@ export function EventGallery({ items, x, scrollProgress, containerRef }: EventGa
                 </svg>
             </div>
 
-            <div className="sticky top-[calc(8rem)] mx-auto flex h-[calc(100svh-8rem)] w-[400px] items-center justify-start overflow-visible max-sm:w-[280px] motion-reduce:relative motion-reduce:h-auto motion-reduce:w-full motion-reduce:overflow-x-auto motion-reduce:py-12">
+            <div className="sticky top-[12rem] mx-auto flex h-fit w-[400px] items-center justify-start overflow-visible max-sm:w-[280px] motion-reduce:relative motion-reduce:h-auto motion-reduce:w-full motion-reduce:overflow-x-auto motion-reduce:py-12">
                 <motion.div
                     className="flex gap-[30px] will-change-transform max-sm:gap-[15px] motion-reduce:transform-none!"
                     style={{
