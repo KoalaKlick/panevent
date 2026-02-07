@@ -29,7 +29,6 @@ export function EventGallery({ items, x, scrollProgress, containerRef }: EventGa
                 '--scroll-height': `max(100vh, ${scrollHeight}vh)`,
             } as React.CSSProperties}
         >
-            f
             {/* Scroll Progress Indicator - Polygon with sides = items count */}
             <div className="sticky top-[calc(90svh)] left-[calc(50%-30px)]  w-fit">
                 <svg
