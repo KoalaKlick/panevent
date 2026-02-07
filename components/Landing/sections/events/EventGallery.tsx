@@ -28,6 +28,7 @@ export function EventGallery({ items, x, scrollProgress, containerRef }: EventGa
                 height: `max(100vh, ${scrollHeight}vh)`,
             }}
         >
+            f
             {/* Scroll Progress Indicator - Polygon with sides = items count */}
             <div className="sticky top-[calc(90svh)] left-[200svh]  w-fit">
                 <svg
@@ -37,6 +38,13 @@ export function EventGallery({ items, x, scrollProgress, containerRef }: EventGa
                     className="-rotate-90"
                 >
                     <title>Scroll Progress Indicator</title>
+                    <defs>
+                        <linearGradient id="panAfricanGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#ef4444" />
+                            <stop offset="50%" stopColor="#facc15" />
+                            <stop offset="100%" stopColor="#16a34a" />
+                        </linearGradient>
+                    </defs>
                     {(() => {
                         const sides = items.length
                         const cx = 50
@@ -60,7 +68,9 @@ export function EventGallery({ items, x, scrollProgress, containerRef }: EventGa
                                 />
                                 <motion.path
                                     d={pathD}
-                                    className="fill-none stroke-[var(--accent,#ff0088)] stroke-[3]"
+                                    fill="none"
+                                    stroke="url(#panAfricanGradient)"
+                                    strokeWidth={3}
                                     strokeLinejoin="round"
                                     pathLength="1"
                                     style={{
