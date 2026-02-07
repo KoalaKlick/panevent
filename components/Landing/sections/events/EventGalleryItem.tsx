@@ -9,7 +9,7 @@ interface EventGalleryItemProps {
 export function EventGalleryItem({ item }: EventGalleryItemProps) {
     return (
         <div
-            className="relative h-[500px] w-[400px] shrink-0 overflow-hidden rounded-xl bg-cover bg-center max-sm:h-[350px] max-sm:w-[280px]"
+            className="relative cursor-pointer h-[500px] w-[400px] shrink-0 overflow-hidden rounded-xl bg-cover bg-center max-sm:h-[350px] max-sm:w-[280px]"
             style={{
                 backgroundImage: `url(${item.image})`,
             }}
