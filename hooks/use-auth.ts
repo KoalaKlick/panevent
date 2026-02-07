@@ -22,13 +22,23 @@ export function useAuth() {
         )
 
         return () => subscription.unsubscribe()
-    }, [])
+    }, [supabase.auth])
+
+    const getRedirectTo = () => {
+        // In development, we usually want to stick to localhost to avoid issues with production redirects on local.
+        if (process.env.NODE_ENV === 'development') {
+            return 'http://localhost:3000/auth/callback'
+        }
+        // In production, prioritize the environment variable, fallback to origin.
+        const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_URL || location.origin
+        return `${baseUrl}/auth/callback`
+    }
 
     const signInWithOtp = async (email: string) => {
         const { error } = await supabase.auth.signInWithOtp({
             email,
             options: {
-                emailRedirectTo: `${location.origin}/auth/callback`,
+                emailRedirectTo: getRedirectTo(),
             },
         })
         return { error }
@@ -54,7 +64,7 @@ export function useAuth() {
                     full_name,
                     phone,
                 },
-                emailRedirectTo: `${location.origin}/auth/callback`, // Important for email verification flow
+                emailRedirectTo: getRedirectTo(), // Important for email verification flow
             },
         })
         return { error }
@@ -64,12 +74,11 @@ export function useAuth() {
         const { error } = await supabase.auth.signInWithOAuth({
             provider,
             options: {
-                redirectTo: `${location.origin}/auth/callback`,
+                redirectTo: getRedirectTo(),
             },
         })
         return { error }
     }
-
 
     const verifyOtp = async (email: string, token: string, type: 'email' | 'signup' | 'invite' | 'recovery' | 'magiclink' = 'email') => {
         const { data, error } = await supabase.auth.verifyOtp({
