@@ -17,20 +17,21 @@ const VH_PER_ITEM_MOBILE = 40
 
 export function EventGallery({ items, x, scrollProgress, containerRef }: EventGalleryProps) {
     // Dynamic scroll height based on item count
-    const scrollHeight = items.length * VH_PER_ITEM
-    const scrollHeightMobile = items.length * VH_PER_ITEM_MOBILE
+    const scrollHeight = items.length * VH_PER_ITEM*2
+    const scrollHeightMobile = items.length * VH_PER_ITEM_MOBILE*2
 
     return (
         <div
             ref={containerRef}
-            className="relative motion-reduce:h-auto"
+            className="relative motion-reduce:h-auto max-md:h-(--scroll-height-mobile)! md:h-(--scroll-height)!"
             style={{
-                height: `max(100vh, ${scrollHeight}vh)`,
-            }}
+                '--scroll-height-mobile': `max(100vh, ${scrollHeightMobile}vh)`,
+                '--scroll-height': `max(100vh, ${scrollHeight}vh)`,
+            } as React.CSSProperties}
         >
             f
             {/* Scroll Progress Indicator - Polygon with sides = items count */}
-            <div className="sticky top-[calc(90svh)] left-[200svh]  w-fit">
+            <div className="sticky top-[calc(90svh)] left-[calc(50%-30px)]  w-fit">
                 <svg
                     width="60"
                     height="60"
@@ -83,9 +84,9 @@ export function EventGallery({ items, x, scrollProgress, containerRef }: EventGa
                 </svg>
             </div>
 
-            <div className="sticky top-0 mx-auto flex h-screen w-[400px] items-center justify-start overflow-visible max-sm:w-[280px] motion-reduce:relative motion-reduce:h-auto motion-reduce:w-full motion-reduce:overflow-x-auto motion-reduce:py-12">
+            <div className="sticky top-[calc(8rem)] mx-auto flex h-[calc(100svh-8rem)] w-[400px] items-center justify-start overflow-visible max-sm:w-[280px] motion-reduce:relative motion-reduce:h-auto motion-reduce:w-full motion-reduce:overflow-x-auto motion-reduce:py-12">
                 <motion.div
-                    className="flex gap-[30px] will-change-transform max-sm:gap-[15px] motion-reduce:!transform-none"
+                    className="flex gap-[30px] will-change-transform max-sm:gap-[15px] motion-reduce:transform-none!"
                     style={{
                         x,
                         // Total width = (itemWidth + gap) * (items - 1) for proper 0-100% mapping

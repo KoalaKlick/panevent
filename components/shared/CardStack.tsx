@@ -67,7 +67,7 @@ export function CardStack({
 
                 return (
                     <motion.div
-                        key={`card-${cardIndex}`}
+                        key={`card-${activeIndex}`}
                         className="absolute inset-x-0 top-0 cursor-pointer"
                         style={{
                             width: typeof width === "number" ? `${width}px` : width,

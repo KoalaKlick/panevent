@@ -17,6 +17,8 @@ import { Menu } from "lucide-react"
 import { PanAfricanDivider } from '@/components/shared/PanAficDivider'
 import Image from "next/image"
 import PanafricanButton from "@/components/shared/PanafricanButton"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export interface NavbarProps extends React.HTMLAttributes<HTMLElement> {
     logo?: React.ReactNode
@@ -56,6 +58,7 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
         const [scrolled, setScrolled] = useState(false)
         const containerRef = useRef<HTMLElement>(null)
         const { scrollY } = useScroll()
+        const router = useRouter()
 
         useEffect(() => {
             const checkWidth = () => {
@@ -157,6 +160,13 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
             [ref],
         )
 
+        const getLinkClassName = (link: NavbarNavLink) => {
+            if (activeHref === link.href) {
+                return scrolled ? "text-sepia" : "text-white"
+            }
+            return scrolled ? "text-gray-700 hover:text-primary" : "text-gray-300 hover:text-white"
+        }
+
         return (
             <motion.header
                 className={cn(
@@ -215,9 +225,7 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                                                 className="bg-black  sm:hidden rounded-none hover:bg-black/80 text-sepia-100 hover:text-sepia-200"
                                                 onClick={e => {
                                                     e.preventDefault()
-                                                    if (onSignInClick) {
-                                                        onSignInClick()
-                                                    }
+
                                                 }}
                                                 variant="ghost"
                                             > {ctaText}
@@ -229,27 +237,25 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                         )}
                         {/* Main nav */}
                         <div className="flex items-center gap-6">
-                            <a
-                                href={logoHref}
+                            <Link
+                                href={`/${logoHref}`}
                                 className="flex items-center space-x-2 text-primary hover:text-primary/90 transition-colors cursor-pointer"
                             >
                                 <Image src="/logo.png" className="h-10 bg-black px-2" alt="logo" width={124.2} height={38.1} />
 
-                            </a>
+                            </Link>
                             {/* Navigation menu */}
                             {!isMobile && (
                                 <NavigationMenu className="flex">
                                     <NavigationMenuList className="gap-10">
                                         {navigationLinks.map((link) => (
                                             <NavigationMenuItem key={link.href}>
-                                                <a
+                                                <Link
                                                     href={link.href}
                                                     onClick={() => setActiveHref(link.href)}
                                                     className={cn(
                                                         "group relative inline-flex w-max items-left justify-center rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 cursor-pointer no-underline",
-                                                        activeHref === link.href
-                                                            ? scrolled ? " text-sepia" : " text-white"
-                                                            : scrolled ? "text-gray-700 hover:text-primary" : "text-gray-300 hover:text-white",
+                                                        getLinkClassName(link),
                                                     )}
                                                 >
                                                     {link.label}
@@ -258,7 +264,7 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                                                             ? "w-full opacity-100"
                                                             : "hover:text-sepia-200"
                                                     )} />
-                                                </a>
+                                                </Link>
                                             </NavigationMenuItem>
                                         ))}
                                     </NavigationMenuList>
@@ -292,9 +298,7 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                             className="bg-black hidden sm:block rounded-none hover:bg-black/80 text-sepia-100 hover:text-sepia-200"
                             onClick={e => {
                                 e.preventDefault()
-                                if (onSignInClick) {
-                                    onSignInClick()
-                                }
+                                router.push("/promoter")
                             }}
                             variant="ghost"
                         > {ctaText}

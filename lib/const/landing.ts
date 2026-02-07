@@ -5,11 +5,11 @@ export interface NavbarNavLink {
 }
 
 export const defaultNavigationLinks: NavbarNavLink[] = [
-    { href: "#", label: "Home", active: true },
-    { href: "#features", label: "Features" },
-    { href: "#about", label: "About" },
-    { href: "#contact", label: "Contact" },
-    { href: "#faq", label: "FAQ" },
+    { href: "/#", label: "Home", active: true },
+    { href: "/#features", label: "Features" },
+    { href: "/#about", label: "About" },
+    { href: "/contact", label: "Contact" },
+    { href: "/#faq", label: "FAQ" },
 ]
 
 // Events Section Data

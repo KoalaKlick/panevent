@@ -2,6 +2,7 @@
 
 import { ScrambleText } from '@/components/shared/ScrambleText'
 import PanafricanButton from '@/components/shared/PanafricanButton'
+import Image from 'next/image'
 
 export function HeroSection() {
     return (
@@ -12,7 +13,7 @@ export function HeroSection() {
                 <div className="flex-1" />
 
                 {/* Gap - Pan-African stripes (bg-fixed to match parent) */}
-                <div className="w-2 md:w-2 bg- bg-fixed  bg-[image:var(--bg-pan-african-stripes)]" />
+                <div className="w-2 md:w-2 bg- bg-fixed  bg-(image:--bg-pan-african-stripes)" />
 
                 {/* Center panel - frosted glass over parent bg */}
                 <div className="w-full max-w-6xl z-10  relative  backdrop-sepia backdrop-blur-md bg-black/50 flex flex-col xs:justify-between px-4 md:py-20">
@@ -73,7 +74,7 @@ export function HeroSection() {
                     {/* Hero image with split effect - grayscale left, color right */}
                     <div className="md:block absolute right-0 md:-right-48 bottom-0 h-52 sm:h-72 md:h-96">
                         {/* The actual image */}
-                        <img className="h-52 sm:h-72 md:h-96 w-auto" src="/landing/hero-womam-1.webp" alt="Hero" />
+                        <Image width={1312} height={1511} className="h-52 sm:h-72 md:h-96 w-auto" src="/landing/hero-womam-1.webp" alt="Hero" />
                         {/* grayscale overlay - covers left portion */}
                         <div className="absolute inset-0 right-0 md:right-48 " />
                         {/* Color overlay - covers right w-48, no filter */}
@@ -82,7 +83,7 @@ export function HeroSection() {
                 </div>
 
                 {/* Gap - Pan-African stripes (bg-fixed to match parent) */}
-                <div className="w-2 md:w-2 bg-fixed bg-[image:var(--bg-pan-african-stripes)]" />
+                <div className="w-2 md:w-2 bg-fixed bg-(image:--bg-pan-african-stripes)" />
 
                 {/* Right panel - transparent to show colored overflow */}
                 <div className="flex-1 backdrop- z-0 bg-amber-100/5" />

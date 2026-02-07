@@ -32,7 +32,12 @@ export function EventsSection({
 
     return (
         <Section id="events" className="h-auto overflow-visible bg-primary-950 relative">
-            {/* <EventsIntro title={title} /> */}
+            {/* Sticky title that stays on top while gallery scrolls horizontally */}
+            <div className="sticky top-0 z-0 py-8 ">
+                <h2 className="text-4xl md:text-6xl font-bold text-center text-white">
+                    {title}
+                </h2>
+            </div>
             <EventGallery items={items} x={x} scrollProgress={scrollYProgress} containerRef={containerRef} />
             {/* <EventsOutro text={outroText} /> */}
         </Section>
