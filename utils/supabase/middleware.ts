@@ -8,6 +8,8 @@ export async function updateSession(request: NextRequest) {
         },
     })
 
+    const protectedRoutes = ['/dashboard', '/profile', '/settings', '/orders', '/cart', '/checkout']
+
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -37,11 +39,8 @@ export async function updateSession(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser()
 
-    if (
-        !user &&
-        !request.nextUrl.pathname.startsWith('/auth')
-    ) {
-        // no user, potentially respond by redirecting the user to the login page
+
+    if (!user && protectedRoutes.includes(request.nextUrl.pathname)) {
         const url = request.nextUrl.clone()
         url.pathname = '/auth/login'
         return NextResponse.redirect(url)
