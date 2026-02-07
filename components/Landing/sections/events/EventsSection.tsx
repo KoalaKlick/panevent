@@ -33,7 +33,7 @@ export function EventsSection({
     return (
         <Section id="events" className="h-auto overflow-visible bg-primary-950 relative">
             {/* Sticky title that stays on top while gallery scrolls horizontally */}
-            <div className="sticky top-16 z-0 h-8rem ">
+            <div className="sticky top-20 pt-10 md:pt-5 md:top-16 z-0 h-8rem ">
                 <h2 className="text-4xl md:text-6xl font-bold text-center text-primary-50 mb-1">
                     {title}
                 </h2>
