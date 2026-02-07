@@ -3,20 +3,16 @@
 import { useScroll, useTransform } from "motion/react"
 import { useRef } from "react"
 import { eventItems, type EventItem } from "@/lib/const/landing"
-import { EventsIntro } from "./EventsIntro"
 import { EventGallery } from "./EventGallery"
-import { EventsOutro } from "./EventsOutro"
 import { Section } from "../../shared/Section"
 
 interface EventsSectionProps {
     readonly title?: string
-    readonly outroText?: string
     readonly items?: EventItem[]
 }
 
 export function EventsSection({
     title = "Ongoing Events",
-    outroText = "Fin",
     items = eventItems,
 }: EventsSectionProps) {
     const containerRef = useRef<HTMLDivElement>(null)
@@ -40,7 +36,6 @@ export function EventsSection({
                     <p className="text-center text-primary-200">Explore ongoing events and discover what's happening now.</p>
                 </div> </div>
             <EventGallery items={items} x={x} scrollProgress={scrollYProgress} containerRef={containerRef} />
-            {/* <EventsOutro text={outroText} /> */}
         </Section>
     )
 }

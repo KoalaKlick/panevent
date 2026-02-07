@@ -22,7 +22,7 @@ export function EventGalleryItem({ item }: EventGalleryItemProps) {
                 }}
             />
             {/* Content */}
-            <div className="absolute bottom-[30px] left-[30px] z-10 max-sm:bottom-5 max-sm:left-5">
+            <div className="absolute bottom-7.5 left-7.5 z-10 max-sm:bottom-5 max-sm:left-5">
                 <span
                     className="mb-2 block font-mono text-sm"
                     style={{ color: item.color }}
