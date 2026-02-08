@@ -278,9 +278,7 @@ export const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
                             className="text-sm font-medium px-4 h-9 rounded-none shadow-sm"
                             onClick={e => {
                                 e.preventDefault()
-                                if (onCtaClick) {
-                                    onCtaClick()
-                                }
+                                router.push("/auth/login")
                             }}
                             size="sm"
                             variant="sepia"

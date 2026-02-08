@@ -30,7 +30,7 @@ export function useAuth() {
             return 'http://localhost:3000/auth/callback'
         }
         // In production, prioritize the environment variable, fallback to origin.
-        const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_URL || location.origin
+        const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_URL || location.origin || window.location.origin
         return `${baseUrl}/auth/callback`
     }
 
@@ -56,6 +56,7 @@ export function useAuth() {
     }
 
     const signUp = async ({ email, password, full_name, phone }: { email: string, password: string, full_name: string, phone: string }) => {
+       console.log("email:",email,"full_name: ",full_name,"phone: ",phone)
         const { error } = await supabase.auth.signUp({
             email,
             password,
