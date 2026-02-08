@@ -64,7 +64,7 @@ export function useAuth() {
             password,
         })
         if (!error) {
-            router.push('/dashboard')
+            router.push('/dashboard') // Redirect to protected index page
         }
         return { error }
     }
