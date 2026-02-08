@@ -44,6 +44,20 @@ export function useAuth() {
         return { error }
     }
 
+    const resetPasswordForEmail = async (email: string) => {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : process.env.NEXT_PUBLIC_DOMAIN_URL || location.origin}/auth/reset-password`,
+        })
+        return { error }
+    }
+
+    const updatePassword = async (newPassword: string) => {
+        const { error } = await supabase.auth.updateUser({
+            password: newPassword,
+        })
+        return { error }
+    }
+
     const signInWithPassword = async ({ email, password }: { email: string, password: string }) => {
         const { error } = await supabase.auth.signInWithPassword({
             email,
@@ -56,7 +70,7 @@ export function useAuth() {
     }
 
     const signUp = async ({ email, password, full_name, phone }: { email: string, password: string, full_name: string, phone: string }) => {
-       console.log("email:",email,"full_name: ",full_name,"phone: ",phone)
+        console.log("email:", email, "full_name: ", full_name, "phone: ", phone)
         const { error } = await supabase.auth.signUp({
             email,
             password,
@@ -68,6 +82,7 @@ export function useAuth() {
                 emailRedirectTo: getRedirectTo(), // Important for email verification flow
             },
         })
+        console.log("error: ", error)
         return { error }
     }
 
@@ -89,7 +104,7 @@ export function useAuth() {
         })
 
         if (!error) {
-            router.push('/')
+            router.push('/dashboard')
         }
 
         return { data, error }
@@ -109,6 +124,8 @@ export function useAuth() {
         signUp,
         signInWithOAuth,
         verifyOtp,
+        resetPasswordForEmail,
+        updatePassword,
         signOut,
     }
 }
