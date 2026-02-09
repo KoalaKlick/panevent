@@ -20,11 +20,12 @@ import {
 } from "@/components/ui/input-otp"
 import { useAuth } from '@/hooks/use-auth'
 import { useState, Suspense } from 'react'
-import { KeyRound, Loader2, ArrowLeft, AlertCircle, Mail } from 'lucide-react'
+import {  Loader2, ArrowLeft, AlertCircle, Mail } from 'lucide-react'
 import Link from 'next/link'
+import { OTPVerificationIllustration } from '@/components/auth/OTPVerificationIllustration'
 
 const EmailSchema = z.object({
-    email: z.string().email({ message: 'Please enter a valid email address.' }),
+    email: z.email({ message: 'Please enter a valid email address.' }),
 })
 
 const OtpSchema = z.object({
@@ -83,12 +84,11 @@ function ForgotPasswordContent() {
             <div className="w-full max-w-sm space-y-6">
                 <div className="text-center">
                     <div className="flex justify-center mb-4">
-                        <KeyRound className="h-16 w-16 text-primary" />
+                        <OTPVerificationIllustration className="h-24 w-24" />
                     </div>
                     <h1 className="text-2xl font-semibold tracking-tight">Enter Verification Code</h1>
                     <p className="mt-1 text-sm text-muted-foreground">
-                        We sent a 6-digit code to
-                        <strong className="block mt-1">{email}</strong>
+                        We sent a 6-digit code to<strong className="block mt-1">{email}</strong>
                     </p>
                 </div>
 

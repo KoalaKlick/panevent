@@ -1,11 +1,11 @@
 import Image from "next/image"
 import type { ReactNode } from "react"
 
-export default function AuthLayout({ children }: { children: ReactNode }) {
+export default function AuthLayout({ children }: {readonly children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background flex flex-col lg:flex-row font-poppins">
       {/* Left hero / brand side */}
-      <div className="relative w-full lg:w-1/2 h-[260px] lg:h-auto overflow-hidden">
+      <div className="relative w-full lg:w-1/2 h-65 lg:h-auto overflow-hidden">
         <Image
           src="/landing/g.webp"
           alt="People enjoying an event"

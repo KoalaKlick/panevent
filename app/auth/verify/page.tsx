@@ -9,7 +9,8 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import { Button } from '@/components/ui/button'
-import { Mail, Loader2, CheckCircle } from 'lucide-react'
+import { Loader2, CheckCircle } from 'lucide-react'
+import { OTPVerificationIllustration } from "@/components/auth/OTPVerificationIllustration"
 
 function VerificationContent() {
     const router = useRouter()
@@ -55,9 +56,9 @@ function VerificationContent() {
         const supabase = createClient()
         const { error } = await supabase.auth.resend({ type: 'signup', email })
         if (error) {
-            const match = error.message.match(/(\d+)\s*second/)
+            const match = /(\d+)\s*second/.exec(error.message)
             if (match) {
-                setCooldown(parseInt(match[1]))
+                setCooldown(Number.parseInt(match[1], 10))
             } else {
                 setError(error.message)
             }
@@ -98,12 +99,12 @@ function VerificationContent() {
         <div className="w-full space-y-6 flex-1 flex flex-col justify-center">
             <div className="text-center">
                 <div className="flex justify-center mb-4">
-                    <Mail className="h-16 w-16 text-primary" />
+                    <OTPVerificationIllustration className="h-24 w-24" />
                 </div>
                 <h1 className="text-2xl font-semibold tracking-tight">Verify Your Email</h1>
                 <p className="mt-1 text-sm text-muted-foreground">
                     Enter the 6-digit code sent to
-                    {email && <strong className="block mt-1">{email}</strong>}
+                    {email && <strong className=""> {email}</strong>}
                 </p>
             </div>
 
@@ -113,8 +114,11 @@ function VerificationContent() {
                         <InputOTPGroup>
                             <InputOTPSlot index={0} />
                             <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                            <InputOTPSlot index={3} />
+                            <InputOTPSlot index={2} className="rounded-r-none!" />
+                        </InputOTPGroup>
+                        <span className="text-muted-foreground/50">-</span>
+                        <InputOTPGroup>
+                            <InputOTPSlot index={3} className="rounded-l-none!" />
                             <InputOTPSlot index={4} />
                             <InputOTPSlot index={5} />
                         </InputOTPGroup>
@@ -140,7 +144,7 @@ function VerificationContent() {
                         disabled={resending || cooldown !== null}
                     >
                         {resending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                        {cooldown !== null ? `Resend in ${cooldown}s` : 'Resend Code'}
+                        {cooldown === null ? 'Resend Code' : `Resend in ${cooldown}s`}
                     </Button>
                     <Button variant="ghost" className="flex-1 rounded-full" onClick={() => router.push('/auth/login')}>
                         Back to Login

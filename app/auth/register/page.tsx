@@ -27,7 +27,7 @@ const FormSchema = z.object({
     phone: z.string().min(10, {
         message: 'Please enter a valid phone number.',
     }),
-    email: z.string().email({
+    email: z.email({
         message: 'Please enter a valid email address.',
     }),
     password: z.string().min(8, {

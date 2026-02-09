@@ -16,7 +16,8 @@ import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/use-auth'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
-import { Loader2, KeyRound, CheckCircle, Lock } from 'lucide-react'
+import { Loader2, KeyRound, Lock } from 'lucide-react'
+import { PasswordSuccessSVG } from '@/components/auth/PasswordSuccessSVG'
 
 const FormSchema = z.object({
     password: z.string().min(8, {
@@ -93,7 +94,7 @@ export default function ResetPasswordPage() {
         return (
             <div className="w-full text-center space-y-4 flex-1 flex flex-col justify-center">
                 <div className="flex justify-center">
-                    <CheckCircle className="h-16 w-16 text-green-500" />
+                    <PasswordSuccessSVG className="h-24 w-24" />
                 </div>
                 <h1 className="text-2xl font-semibold tracking-tight">Password Updated!</h1>
                 <p className="text-sm text-muted-foreground">

@@ -20,7 +20,7 @@ import GoogleIcon from '@/app/assert/google-icon.svg'
 import Link from 'next/link'
 
 const FormSchema = z.object({
-    email: z.string().email({
+    email: z.email({
         message: 'Please enter a valid email address.',
     }),
     password: z.string().min(1, {
@@ -51,7 +51,7 @@ function LoginForm() {
 
         if (error) {
             form.setError('root', { message: error.message })
-            return
+            return null
         }
     }
 
