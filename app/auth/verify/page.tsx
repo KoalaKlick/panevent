@@ -7,13 +7,13 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Mail, CheckCircle, Loader2 } from 'lucide-react'
 
-export default function VerificationPage() {
+function VerificationContent() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const [email] = useState(searchParams.get('email') || '')
@@ -67,62 +67,74 @@ export default function VerificationPage() {
 
     if (status === 'verified') {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-secondary/30">
-                <Card className="w-100 text-center">
-                    <CardHeader>
-                        <div className="flex justify-center mb-4">
-                            <CheckCircle className="h-16 w-16 text-green-500" />
-                        </div>
-                        <CardTitle>Email Verified!</CardTitle>
-                        <CardDescription>Redirecting to dashboard...</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Loader2 className="h-6 w-6 animate-spin mx-auto" />
-                    </CardContent>
-                </Card>
-            </div>
+            <Card className="w-100 text-center">
+                <CardHeader>
+                    <div className="flex justify-center mb-4">
+                        <CheckCircle className="h-16 w-16 text-green-500" />
+                    </div>
+                    <CardTitle>Email Verified!</CardTitle>
+                    <CardDescription>Redirecting to dashboard...</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+                </CardContent>
+            </Card>
         )
     }
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-secondary/30">
-            <Card className="w-100">
-                <CardHeader className="text-center">
-                    <div className="flex justify-center mb-4">
-                        <Mail className="h-16 w-16 text-primary" />
+        <Card className="w-100">
+            <CardHeader className="text-center">
+                <div className="flex justify-center mb-4">
+                    <Mail className="h-16 w-16 text-primary" />
+                </div>
+                <CardTitle>Check Your Email</CardTitle>
+                <CardDescription>
+                    We sent a verification link to
+                    {email && <strong className="block mt-1">{email}</strong>}
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground text-center">
+                    Click the link in your email to verify, then come back here and press Continue.
+                </p>
+
+                {error && (
+                    <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3">
+                        <p className="text-sm text-destructive">{error}</p>
                     </div>
-                    <CardTitle>Check Your Email</CardTitle>
-                    <CardDescription>
-                        We sent a verification link to
-                        {email && <strong className="block mt-1">{email}</strong>}
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <p className="text-sm text-muted-foreground text-center">
-                        Click the link in your email to verify, then come back here and press Continue.
-                    </p>
+                )}
 
-                    {error && (
-                        <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3">
-                            <p className="text-sm text-destructive">{error}</p>
-                        </div>
-                    )}
+                <Button className="w-full" onClick={handleContinue} disabled={checking}>
+                    {checking ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                    Continue
+                </Button>
 
-                    <Button className="w-full" onClick={handleContinue} disabled={checking}>
-                        {checking ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                        Continue
+                <div className="flex gap-2">
+                    <Button variant="outline" className="flex-1" onClick={handleResend}>
+                        Resend Email
                     </Button>
+                    <Button variant="ghost" className="flex-1" onClick={() => router.push('/auth/login')}>
+                        Back to Login
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
+    )
+}
 
-                    <div className="flex gap-2">
-                        <Button variant="outline" className="flex-1" onClick={handleResend}>
-                            Resend Email
-                        </Button>
-                        <Button variant="ghost" className="flex-1" onClick={() => router.push('/auth/login')}>
-                            Back to Login
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
+export default function VerificationPage() {
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-secondary/30">
+            <Suspense fallback={
+                <Card className="w-100 text-center">
+                    <CardContent className="py-8">
+                        <Loader2 className="h-8 w-8 animate-spin mx-auto" />
+                    </CardContent>
+                </Card>
+            }>
+                <VerificationContent />
+            </Suspense>
         </div>
     )
 }
