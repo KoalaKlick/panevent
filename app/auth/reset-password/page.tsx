@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/card"
 import { useAuth } from '@/hooks/use-auth'
 import { useState, useEffect } from 'react'
+import { createClient } from '@/utils/supabase/client'
+import { Loader2, KeyRound, CheckCircle } from 'lucide-react'
 
 const FormSchema = z.object({
     password: z.string().min(8, {
@@ -38,7 +40,9 @@ export default function ResetPasswordPage() {
     const { updatePassword, loading } = useAuth()
     const router = useRouter()
     const [submitting, setSubmitting] = useState(false)
-    const [error, setError] = useState<string | null>(null)
+    const [checking, setChecking] = useState(true)
+    const [hasSession, setHasSession] = useState(false)
+    const [success, setSuccess] = useState(false)
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -49,13 +53,13 @@ export default function ResetPasswordPage() {
     })
 
     useEffect(() => {
-        // Check if we have a valid session from the reset link
-        const hashParams = new URLSearchParams(window.location.hash.substring(1))
-        const accessToken = hashParams.get('access_token')
-
-        if (!accessToken) {
-            setError('Invalid or expired reset link. Please request a new one.')
+        const checkSession = async () => {
+            const supabase = createClient()
+            const { data: { session } } = await supabase.auth.getSession()
+            setHasSession(!!session)
+            setChecking(false)
         }
+        checkSession()
     }, [])
 
     async function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -68,24 +72,57 @@ export default function ResetPasswordPage() {
             return
         }
 
-        // Redirect to login with success message
-        router.push('/auth/login?reset=success')
+        setSuccess(true)
     }
 
-    if (error) {
+    if (checking) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-secondary/30">
-                <Card className="w-[350px]">
+                <Card className="w-100 text-center">
+                    <CardContent className="py-8">
+                        <Loader2 className="h-8 w-8 animate-spin mx-auto" />
+                    </CardContent>
+                </Card>
+            </div>
+        )
+    }
+
+    if (!hasSession) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-secondary/30">
+                <Card className="w-100 text-center">
                     <CardHeader>
-                        <CardTitle>Reset Link Invalid</CardTitle>
-                        <CardDescription>{error}</CardDescription>
+                        <CardTitle>Session Expired</CardTitle>
+                        <CardDescription>
+                            Your reset link has expired or is invalid. Please request a new one.
+                        </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Button
-                            className="w-full"
-                            onClick={() => router.push('/auth/forgot-password')}
-                        >
+                        <Button onClick={() => router.push('/auth/forgot-password')}>
                             Request New Reset Link
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
+        )
+    }
+
+    if (success) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-secondary/30">
+                <Card className="w-100 text-center">
+                    <CardHeader>
+                        <div className="flex justify-center mb-4">
+                            <CheckCircle className="h-16 w-16 text-green-500" />
+                        </div>
+                        <CardTitle>Password Updated!</CardTitle>
+                        <CardDescription>
+                            Your password has been successfully reset.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Button onClick={() => router.push('/auth/login')}>
+                            Sign In
                         </Button>
                     </CardContent>
                 </Card>
@@ -95,8 +132,11 @@ export default function ResetPasswordPage() {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-secondary/30">
-            <Card className="w-[350px]">
-                <CardHeader>
+            <Card className="w-100">
+                <CardHeader className="text-center">
+                    <div className="flex justify-center mb-4">
+                        <KeyRound className="h-16 w-16 text-primary" />
+                    </div>
                     <CardTitle>Reset Password</CardTitle>
                     <CardDescription>Enter your new password below.</CardDescription>
                 </CardHeader>
@@ -110,7 +150,7 @@ export default function ResetPasswordPage() {
                                     <FormItem>
                                         <FormLabel>New Password</FormLabel>
                                         <FormControl>
-                                            <Input type="password" placeholder="********" {...field} />
+                                            <Input type="password" placeholder="••••••••" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -123,17 +163,20 @@ export default function ResetPasswordPage() {
                                     <FormItem>
                                         <FormLabel>Confirm Password</FormLabel>
                                         <FormControl>
-                                            <Input type="password" placeholder="********" {...field} />
+                                            <Input type="password" placeholder="••••••••" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             {form.formState.errors.root && (
-                                <p className="text-sm font-medium text-destructive">{form.formState.errors.root.message}</p>
+                                <p className="text-sm text-center text-destructive">
+                                    {form.formState.errors.root.message}
+                                </p>
                             )}
                             <Button type="submit" className="w-full" disabled={submitting || loading}>
-                                {submitting ? 'Updating...' : 'Update Password'}
+                                {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                                Update Password
                             </Button>
                         </form>
                     </Form>

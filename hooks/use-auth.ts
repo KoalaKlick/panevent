@@ -13,13 +13,7 @@ export function useAuth() {
     const supabase = createClient()
 
     useEffect(() => {
-        // Get initial session
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session)
-            setUser(session?.user ?? null)
-            setLoading(false)
-        })
-
+ 
         // Listen for auth state changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
             (_event, session) => {
@@ -32,13 +26,16 @@ export function useAuth() {
         return () => subscription.unsubscribe()
     }, [supabase.auth])
 
-    const getRedirectTo = () => `${location.origin}/auth/callback`
+    const getRedirectTo = (type?: string) => {
+        const base = `${location.origin}/auth/callback`
+        return type ? `${base}?type=${type}` : base
+    }
 
     const signInWithOtp = async (email: string) => {
         const { error } = await supabase.auth.signInWithOtp({
             email,
             options: {
-                emailRedirectTo: getRedirectTo(),
+                emailRedirectTo: getRedirectTo('magiclink'),
             },
         })
         return { error }
@@ -46,7 +43,7 @@ export function useAuth() {
 
     const resetPasswordForEmail = async (email: string) => {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${location.origin}/auth/reset-password`,
+            redirectTo: getRedirectTo('recovery'),
         })
         return { error }
     }
@@ -59,6 +56,9 @@ export function useAuth() {
     }
 
     const signInWithPassword = async ({ email, password }: { email: string, password: string }) => {
+        // Clear any existing session first
+        await supabase.auth.signOut()
+        
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
@@ -78,6 +78,9 @@ export function useAuth() {
     }
 
     const signUp = async ({ email, password, full_name, phone }: { email: string, password: string, full_name: string, phone: string }) => {
+        // Clear any existing session first
+        await supabase.auth.signOut()
+        
         const { error } = await supabase.auth.signUp({
             email,
             password,
@@ -86,13 +89,16 @@ export function useAuth() {
                     full_name,
                     phone,
                 },
-                emailRedirectTo: getRedirectTo(),
+                emailRedirectTo: getRedirectTo('signup'),
             },
         })
         return { error }
     }
 
     const signInWithOAuth = async (provider: 'google') => {
+        // Clear any existing session first
+        await supabase.auth.signOut()
+        
         const { error } = await supabase.auth.signInWithOAuth({
             provider,
             options: {
@@ -108,11 +114,6 @@ export function useAuth() {
             token,
             type,
         })
-
-        if (!error) {
-            router.push('/dashboard')
-        }
-
         return { data, error }
     }
 
