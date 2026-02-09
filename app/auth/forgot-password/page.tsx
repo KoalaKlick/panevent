@@ -10,18 +10,9 @@ import {
     FormControl,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
 import {
     InputOTP,
     InputOTPGroup,
@@ -29,7 +20,8 @@ import {
 } from "@/components/ui/input-otp"
 import { useAuth } from '@/hooks/use-auth'
 import { useState, Suspense } from 'react'
-import { KeyRound, Loader2, ArrowLeft, AlertCircle } from 'lucide-react'
+import { KeyRound, Loader2, ArrowLeft, AlertCircle, Mail } from 'lucide-react'
+import Link from 'next/link'
 
 const EmailSchema = z.object({
     email: z.string().email({ message: 'Please enter a valid email address.' }),
@@ -88,73 +80,77 @@ function ForgotPasswordContent() {
     // Step: OTP verification
     if (step === 'otp-verify') {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-secondary/30">
-                <Card className="w-100">
-                    <CardHeader className="text-center">
-                        <div className="flex justify-center mb-4">
-                            <KeyRound className="h-16 w-16 text-primary" />
-                        </div>
-                        <CardTitle>Enter Verification Code</CardTitle>
-                        <CardDescription>
-                            We sent a 6-digit code to
-                            <strong className="block mt-1">{email}</strong>
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Form {...otpForm}>
-                            <form onSubmit={otpForm.handleSubmit(onOtpSubmit)} className="space-y-4">
-                                <FormField
-                                    control={otpForm.control}
-                                    name="otp"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col items-center">
-                                            <FormControl>
-                                                <InputOTP maxLength={6} {...field}>
-                                                    <InputOTPGroup>
-                                                        <InputOTPSlot index={0} />
-                                                        <InputOTPSlot index={1} />
-                                                        <InputOTPSlot index={2} />
-                                                        <InputOTPSlot index={3} />
-                                                        <InputOTPSlot index={4} />
-                                                        <InputOTPSlot index={5} />
-                                                    </InputOTPGroup>
-                                                </InputOTP>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                {otpForm.formState.errors.root && (
-                                    <p className="text-sm text-center text-destructive">
-                                        {otpForm.formState.errors.root.message}
-                                    </p>
-                                )}
-                                <Button type="submit" className="w-full" disabled={submitting}>
-                                    {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                                    Verify Code
-                                </Button>
-                            </form>
-                        </Form>
-                    </CardContent>
-                    <CardFooter className="justify-center">
-                        <Button variant="ghost" size="sm" onClick={() => setStep('email')}>
-                            <ArrowLeft className="h-4 w-4 mr-2" /> Try different email
+            <div className="w-full max-w-sm space-y-6">
+                <div className="text-center">
+                    <div className="flex justify-center mb-4">
+                        <KeyRound className="h-16 w-16 text-primary" />
+                    </div>
+                    <h1 className="text-2xl font-semibold tracking-tight">Enter Verification Code</h1>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        We sent a 6-digit code to
+                        <strong className="block mt-1">{email}</strong>
+                    </p>
+                </div>
+
+                <Form {...otpForm}>
+                    <form onSubmit={otpForm.handleSubmit(onOtpSubmit)} className="space-y-4">
+                        <FormField
+                            control={otpForm.control}
+                            name="otp"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col items-center">
+                                    <FormControl>
+                                        <InputOTP maxLength={6} {...field}>
+                                            <InputOTPGroup>
+                                                <InputOTPSlot index={0} />
+                                                <InputOTPSlot index={1} />
+                                                <InputOTPSlot index={2} />
+                                                <InputOTPSlot index={3} />
+                                                <InputOTPSlot index={4} />
+                                                <InputOTPSlot index={5} />
+                                            </InputOTPGroup>
+                                        </InputOTP>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        {otpForm.formState.errors.root && (
+                            <p className="text-sm text-center text-destructive">
+                                {otpForm.formState.errors.root.message}
+                            </p>
+                        )}
+                        <Button type="submit" className="w-full rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold" disabled={submitting}>
+                            {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                            Verify Code
                         </Button>
-                    </CardFooter>
-                </Card>
+                    </form>
+                </Form>
+
+                <div className="flex justify-center">
+                    <Button variant="ghost" size="sm" onClick={() => setStep('email')}>
+                        <ArrowLeft className="h-4 w-4 mr-2" /> Try different email
+                    </Button>
+                </div>
             </div>
         )
     }
 
     // Step: Enter email
     return (
-        <div className="flex items-center justify-center min-h-screen bg-secondary/30">
-            <Card className="w-100">
-                <CardHeader>
-                    <CardTitle>Forgot Password</CardTitle>
-                    <CardDescription>Enter your email to receive a verification code.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
+        <>
+            <p className="hidden md:block text-sm text-right text-muted-foreground">
+                Remember your password? <Link href="/auth/login" className="font-semibold hover:underline text-red-500">Sign In</Link>
+            </p>
+            <div className="w-full space-y-6 flex-1 flex flex-col justify-center">
+                <div>
+                    <h1 className="text-2xl font-semibold tracking-tight">Forgot Password</h1>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        Enter your email to receive a verification code.
+                    </p>
+                </div>
+
+                <div className="space-y-4">
                     {expired && (
                         <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 flex items-center gap-2">
                             <AlertCircle className="h-4 w-4 text-amber-500" />
@@ -163,15 +159,14 @@ function ForgotPasswordContent() {
                     )}
 
                     <Form {...emailForm}>
-                        <form onSubmit={emailForm.handleSubmit(onEmailSubmit)} className="space-y-4">
+                        <form onSubmit={emailForm.handleSubmit(onEmailSubmit)} className="space-y-4 md:space-y-6">
                             <FormField
                                 control={emailForm.control}
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Email</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="you@example.com" {...field} />
+                                            <Input icon={<Mail className="size-4" />} placeholder="Email Address" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -182,35 +177,26 @@ function ForgotPasswordContent() {
                                     {emailForm.formState.errors.root.message}
                                 </p>
                             )}
-                            <Button type="submit" className="w-full" disabled={submitting || loading}>
+                            <Button type="submit" className="w-full rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold" disabled={submitting || loading}>
                                 {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                                 Send Code
                             </Button>
                         </form>
                     </Form>
-                </CardContent>
-                <CardFooter className="justify-center">
-                    <p className="text-sm text-muted-foreground">
-                        Remember your password?{' '}
-                        <a href="/auth/login" className="underline hover:text-primary">Sign in</a>
-                    </p>
-                </CardFooter>
-            </Card>
-        </div>
+                </div>
+
+                <p className="md:hidden text-sm text-center text-muted-foreground">
+                    Remember your password?{' '}
+                    <Link href="/auth/login" className="text-red-500 font-medium hover:underline">Sign in</Link>
+                </p>
+            </div>
+        </>
     )
 }
 
 export default function ForgotPasswordPage() {
     return (
-        <Suspense fallback={
-            <div className="flex items-center justify-center min-h-screen bg-secondary/30">
-                <Card className="w-100">
-                    <CardContent className="py-8 text-center">
-                        <Loader2 className="h-8 w-8 animate-spin mx-auto" />
-                    </CardContent>
-                </Card>
-            </div>
-        }>
+        <Suspense fallback={<div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin" /></div>}>
             <ForgotPasswordContent />
         </Suspense>
     )

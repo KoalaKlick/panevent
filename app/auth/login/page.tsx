@@ -3,28 +3,21 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import {
     Form,
     FormControl,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
 import { useAuth } from '@/hooks/use-auth'
 import { useState, Suspense } from 'react'
-import { CheckCircle } from 'lucide-react'
+import { CheckCircle, Loader2, Mail, Lock } from 'lucide-react'
+import GoogleIcon from '@/app/assert/google-icon.svg'
+import Link from 'next/link'
 
 const FormSchema = z.object({
     email: z.string().email({
@@ -37,7 +30,6 @@ const FormSchema = z.object({
 
 function LoginForm() {
     const { signInWithPassword, signInWithOAuth, loading } = useAuth()
-    const router = useRouter()
     const searchParams = useSearchParams()
     const verified = searchParams.get('verified') === 'true'
     const [submitting, setSubmitting] = useState(false)
@@ -61,8 +53,6 @@ function LoginForm() {
             form.setError('root', { message: error.message })
             return
         }
-
-        // Redirect handled in hook or successful login state
     }
 
     const handleGoogleSignIn = async () => {
@@ -70,98 +60,96 @@ function LoginForm() {
     }
 
     return (
-        <Card className="w-[350px]">
-            <CardHeader>
-                <CardTitle>Sign In</CardTitle>
-                <CardDescription>Enter your credentials to access your account.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                {verified && (
-                    <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 mb-4 flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        <p className="text-sm text-green-600">Email verified! You can now log in.</p>
-                    </div>
-                )}
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Email</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="you@example.com" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="password"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <div className="flex items-center justify-between">
-                                            <FormLabel>Password</FormLabel>
-                                            <a
-                                                href="/auth/forgot-password"
-                                                className="text-xs text-muted-foreground hover:text-primary underline"
-                                            >
-                                                Forgot password?
-                                            </a>
-                                        </div>
-                                        <FormControl>
-                                            <Input type="password" placeholder="********" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            {form.formState.errors.root && (
-                                <p className="text-sm font-medium text-destructive">{form.formState.errors.root.message}</p>
-                            )}
-                            <Button type="submit" className="w-full" disabled={submitting || loading}>
-                                {submitting ? 'Signing in...' : 'Sign In'}
-                            </Button>
-                        </form>
-                    </Form>
-
-                    <div className="relative my-4">
-                        <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t" />
-                        </div>
-                        <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-                        </div>
-                    </div>
-
-                    <Button variant="outline" type="button" className="w-full" onClick={handleGoogleSignIn} disabled={loading}>
-                        <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-                            <title>Google icon</title>
-                            <path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path>
-                        </svg>
-                        Google
+        <div className="space-y-6">
+            {verified && (
+                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    <p className="text-sm text-green-600">Email verified! You can now log in.</p>
+                </div>
+            )}
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-6">
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Input icon={<Mail className="size-4" />} placeholder="Email Address" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Input icon={<Lock className="size-4" />} type="password" placeholder="Password" {...field} />
+                                </FormControl>
+                                <div className="flex justify-end">
+                                    <Link
+                                        href="/auth/forgot-password"
+                                        className="text-xs text-muted-foreground hover:text-primary underline"
+                                    >
+                                        Forgot password?
+                                    </Link>
+                                </div>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    {form.formState.errors.root && (
+                        <p className="text-sm font-medium text-destructive">{form.formState.errors.root.message}</p>
+                    )}
+                    <Button type="submit" className="w-full rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold" disabled={submitting || loading}>
+                        {submitting ? 'Signing in...' : 'Sign In'}
                     </Button>
-                </CardContent>
-                <CardFooter className="flex-col gap-2">
-                    <p className="text-sm text-muted-foreground">
-                        Don't have an account? <a href="/auth/register" className="underline hover:text-primary">Sign up</a>
-                    </p>
-                    <a href="/auth/forgot-password" className="text-sm text-muted-foreground underline hover:text-primary">
-                        Forgot password?
-                    </a>
-                </CardFooter>
-            </Card>
+                </form>
+            </Form>
+
+            <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs">
+                    <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                </div>
+            </div>
+
+            <Button variant="outline" type="button" className="w-full rounded-full shadow-none bg-neutral-50" onClick={handleGoogleSignIn} disabled={loading}>
+                <GoogleIcon className="mr-2 h-4 w-4" />
+                Google
+            </Button>
+
+            <p className="md:hidden text-sm text-center text-muted-foreground">
+                Don't have an account? <Link href="/auth/register" className="text-red-500 font-medium hover:underline">Sign up</Link>
+            </p>
+        </div>
     )
 }
 
 export default function LoginPage() {
     return (
-        <div className="flex items-center justify-center min-h-screen bg-secondary/30">
-            <Suspense fallback={<Card className="w-[350px]"><CardContent className="py-8 text-center">Loading...</CardContent></Card>}>
-                <LoginForm />
-            </Suspense>
-        </div>
+        <>
+            <p className="hidden md:block text-sm text-right text-muted-foreground">
+                Don't have an account? <Link href="/auth/register" className="font-semibold hover:underline text-red-500">Sign Up</Link>
+            </p>
+            <div className="w-full space-y-6 flex-1 flex flex-col justify-center">
+                <div>
+                    <h1 className="text-2xl font-semibold tracking-tight">
+                        Welcome Back
+                    </h1>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        Sign in to continue discovering events.
+                    </p>
+                </div>
+                <Suspense fallback={<div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin" /></div>}>
+                    <LoginForm />
+                </Suspense>
+            </div>
+        </>
     )
 }

@@ -1,13 +1,6 @@
 'use client'
 
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import {
     InputOTP,
     InputOTPGroup,
     InputOTPSlot,
@@ -62,7 +55,6 @@ function VerificationContent() {
         const supabase = createClient()
         const { error } = await supabase.auth.resend({ type: 'signup', email })
         if (error) {
-            // Check for rate limit
             const match = error.message.match(/(\d+)\s*second/)
             if (match) {
                 setCooldown(parseInt(match[1]))
@@ -75,7 +67,6 @@ function VerificationContent() {
         setResending(false)
     }
 
-    // Cooldown timer
     useEffect(() => {
         if (cooldown === null) return
         const interval = setInterval(() => {
@@ -92,34 +83,31 @@ function VerificationContent() {
 
     if (verified) {
         return (
-            <Card className="w-100 text-center">
-                <CardHeader>
-                    <div className="flex justify-center mb-4">
-                        <CheckCircle className="h-16 w-16 text-green-500" />
-                    </div>
-                    <CardTitle>Email Verified!</CardTitle>
-                    <CardDescription>Redirecting to dashboard...</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Loader2 className="h-6 w-6 animate-spin mx-auto" />
-                </CardContent>
-            </Card>
+            <div className="w-full text-center space-y-4 flex-1 flex flex-col justify-center">
+                <div className="flex justify-center">
+                    <CheckCircle className="h-16 w-16 text-green-500" />
+                </div>
+                <h1 className="text-2xl font-semibold tracking-tight">Email Verified!</h1>
+                <p className="text-sm text-muted-foreground">Redirecting to dashboard...</p>
+                <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+            </div>
         )
     }
 
     return (
-        <Card className="w-100">
-            <CardHeader className="text-center">
+        <div className="w-full space-y-6 flex-1 flex flex-col justify-center">
+            <div className="text-center">
                 <div className="flex justify-center mb-4">
                     <Mail className="h-16 w-16 text-primary" />
                 </div>
-                <CardTitle>Verify Your Email</CardTitle>
-                <CardDescription>
+                <h1 className="text-2xl font-semibold tracking-tight">Verify Your Email</h1>
+                <p className="mt-1 text-sm text-muted-foreground">
                     Enter the 6-digit code sent to
                     {email && <strong className="block mt-1">{email}</strong>}
-                </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+                </p>
+            </div>
+
+            <div className="space-y-4">
                 <div className="flex justify-center">
                     <InputOTP maxLength={6} value={otp} onChange={setOtp}>
                         <InputOTPGroup>
@@ -139,7 +127,7 @@ function VerificationContent() {
                     </div>
                 )}
 
-                <Button className="w-full" onClick={handleVerify} disabled={submitting || otp.length !== 6}>
+                <Button className="w-full rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold" onClick={handleVerify} disabled={submitting || otp.length !== 6}>
                     {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                     Verify Email
                 </Button>
@@ -147,34 +135,26 @@ function VerificationContent() {
                 <div className="flex gap-2">
                     <Button
                         variant="outline"
-                        className="flex-1"
+                        className="flex-1 rounded-full"
                         onClick={handleResend}
                         disabled={resending || cooldown !== null}
                     >
                         {resending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                         {cooldown !== null ? `Resend in ${cooldown}s` : 'Resend Code'}
                     </Button>
-                    <Button variant="ghost" className="flex-1" onClick={() => router.push('/auth/login')}>
+                    <Button variant="ghost" className="flex-1 rounded-full" onClick={() => router.push('/auth/login')}>
                         Back to Login
                     </Button>
                 </div>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     )
 }
 
 export default function VerificationPage() {
     return (
-        <div className="flex items-center justify-center min-h-screen bg-secondary/30">
-            <Suspense fallback={
-                <Card className="w-100 text-center">
-                    <CardContent className="py-8">
-                        <Loader2 className="h-8 w-8 animate-spin mx-auto" />
-                    </CardContent>
-                </Card>
-            }>
-                <VerificationContent />
-            </Suspense>
-        </div>
+        <Suspense fallback={<div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin" /></div>}>
+            <VerificationContent />
+        </Suspense>
     )
 }

@@ -10,21 +10,13 @@ import {
     FormControl,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
 import { useAuth } from '@/hooks/use-auth'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
-import { Loader2, KeyRound, CheckCircle } from 'lucide-react'
+import { Loader2, KeyRound, CheckCircle, Lock } from 'lucide-react'
 
 const FormSchema = z.object({
     password: z.string().min(8, {
@@ -77,111 +69,90 @@ export default function ResetPasswordPage() {
 
     if (checking) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-secondary/30">
-                <Card className="w-100 text-center">
-                    <CardContent className="py-8">
-                        <Loader2 className="h-8 w-8 animate-spin mx-auto" />
-                    </CardContent>
-                </Card>
+            <div className="flex justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin" />
             </div>
         )
     }
 
     if (!hasSession) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-secondary/30">
-                <Card className="w-100 text-center">
-                    <CardHeader>
-                        <CardTitle>Session Expired</CardTitle>
-                        <CardDescription>
-                            Your reset link has expired or is invalid. Please request a new one.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Button onClick={() => router.push('/auth/forgot-password')}>
-                            Request New Reset Link
-                        </Button>
-                    </CardContent>
-                </Card>
+            <div className="w-full text-center space-y-4 flex-1 flex flex-col justify-center">
+                <h1 className="text-2xl font-semibold tracking-tight">Session Expired</h1>
+                <p className="text-sm text-muted-foreground">
+                    Your reset link has expired or is invalid. Please request a new one.
+                </p>
+                <Button onClick={() => router.push('/auth/forgot-password')} className="w-full rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold">
+                    Request New Reset Link
+                </Button>
             </div>
         )
     }
 
     if (success) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-secondary/30">
-                <Card className="w-100 text-center">
-                    <CardHeader>
-                        <div className="flex justify-center mb-4">
-                            <CheckCircle className="h-16 w-16 text-green-500" />
-                        </div>
-                        <CardTitle>Password Updated!</CardTitle>
-                        <CardDescription>
-                            Your password has been successfully reset.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Button onClick={() => router.push('/auth/login')}>
-                            Sign In
-                        </Button>
-                    </CardContent>
-                </Card>
+            <div className="w-full text-center space-y-4 flex-1 flex flex-col justify-center">
+                <div className="flex justify-center">
+                    <CheckCircle className="h-16 w-16 text-green-500" />
+                </div>
+                <h1 className="text-2xl font-semibold tracking-tight">Password Updated!</h1>
+                <p className="text-sm text-muted-foreground">
+                    Your password has been successfully reset.
+                </p>
+                <Button onClick={() => router.push('/auth/login')} className="w-full rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold">
+                    Sign In
+                </Button>
             </div>
         )
     }
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-secondary/30">
-            <Card className="w-100">
-                <CardHeader className="text-center">
-                    <div className="flex justify-center mb-4">
-                        <KeyRound className="h-16 w-16 text-primary" />
-                    </div>
-                    <CardTitle>Reset Password</CardTitle>
-                    <CardDescription>Enter your new password below.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                            <FormField
-                                control={form.control}
-                                name="password"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>New Password</FormLabel>
-                                        <FormControl>
-                                            <Input type="password" placeholder="••••••••" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="confirmPassword"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Confirm Password</FormLabel>
-                                        <FormControl>
-                                            <Input type="password" placeholder="••••••••" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            {form.formState.errors.root && (
-                                <p className="text-sm text-center text-destructive">
-                                    {form.formState.errors.root.message}
-                                </p>
-                            )}
-                            <Button type="submit" className="w-full" disabled={submitting || loading}>
-                                {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                                Update Password
-                            </Button>
-                        </form>
-                    </Form>
-                </CardContent>
-            </Card>
+        <div className="w-full space-y-6 flex-1 flex flex-col justify-center">
+            <div className="text-center">
+                <div className="flex justify-center mb-4">
+                    <KeyRound className="h-16 w-16 text-primary" />
+                </div>
+                <h1 className="text-2xl font-semibold tracking-tight">Reset Password</h1>
+                <p className="mt-1 text-sm text-muted-foreground">Enter your new password below.</p>
+            </div>
+
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-6">
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Input icon={<Lock className="size-4" />} type="password" placeholder="New Password" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="confirmPassword"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <Input icon={<Lock className="size-4" />} type="password" placeholder="Confirm Password" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    {form.formState.errors.root && (
+                        <p className="text-sm text-center text-destructive">
+                            {form.formState.errors.root.message}
+                        </p>
+                    )}
+                    <Button type="submit" className="w-full rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold" disabled={submitting || loading}>
+                        {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                        Update Password
+                    </Button>
+                </form>
+            </Form>
         </div>
     )
 }

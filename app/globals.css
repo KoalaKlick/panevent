@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Geist:wght@100..900&family=Manrope:wght@200..800&family=Monoton&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Playwrite+US+Trad+Guides&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Geist:wght@100..900&family=Manrope:wght@200..800&family=Monoton&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Playwrite+US+Trad+Guides&family=Poppins:wght@100..900&display=swap');
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -65,7 +65,7 @@ html {
   --secondary: oklch(0.967 0.003 264.542);
   --secondary-foreground: oklch(0.21 0.034 264.665);
   --muted: oklch(0.967 0.003 264.542);
-  --muted-foreground: oklch(0.551 0.027 264.364);
+  --muted-foreground: var(--color-neutral-500);
   --accent: oklch(0.967 0.003 264.542);
   --accent-foreground: oklch(0.21 0.034 264.665);
   --destructive: oklch(0.577 0.245 27.325);
@@ -130,6 +130,16 @@ html {
     @apply bg-background text-foreground;
   }
 
+  /* Override browser autofill background */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--color-gray-50) inset !important;
+    -webkit-text-fill-color: var(--foreground) !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
   @theme {
     --font-outfit: "Outfit", sans-serif;
     --font-montserrat: "Montserrat", sans-serif;
@@ -139,6 +149,7 @@ html {
     --font-bungee-spice: "Bungee Spice", cursive;
     --font-playwrite-us-trad-guides: "Playwrite US Trad Guides", serif;
     --font-monoton: "Monoton", cursive;
+    --font-poppins: "Poppins", sans-serif;
 
   }
 }
