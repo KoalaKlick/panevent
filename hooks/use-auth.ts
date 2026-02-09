@@ -1,6 +1,7 @@
 'use client'
 
 import { createClient } from '@/utils/supabase/client'
+import { buildAuthCallbackUrl } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import type { User, Session } from '@/types/auth'
@@ -13,7 +14,6 @@ export function useAuth() {
     const supabase = createClient()
 
     useEffect(() => {
- 
         // Listen for auth state changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
             (_event, session) => {
@@ -26,25 +26,27 @@ export function useAuth() {
         return () => subscription.unsubscribe()
     }, [supabase.auth])
 
-    const getRedirectTo = (type?: string) => {
-        const base = `${location.origin}/auth/callback`
-        return type ? `${base}?type=${type}` : base
-    }
-
     const signInWithOtp = async (email: string) => {
         const { error } = await supabase.auth.signInWithOtp({
             email,
             options: {
-                emailRedirectTo: getRedirectTo('magiclink'),
+                emailRedirectTo: buildAuthCallbackUrl('magiclink'),
             },
         })
         return { error }
     }
 
+    // Send password reset email with link
     const resetPasswordForEmail = async (email: string) => {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: getRedirectTo('recovery'),
+            redirectTo: buildAuthCallbackUrl('recovery'),
         })
+        return { error }
+    }
+
+    // Send password reset OTP code (no redirect, just the code)
+    const sendRecoveryOtp = async (email: string) => {
+        const { error } = await supabase.auth.resetPasswordForEmail(email)
         return { error }
     }
 
@@ -58,17 +60,11 @@ export function useAuth() {
     const signInWithPassword = async ({ email, password }: { email: string, password: string }) => {
         // Clear any existing session first
         await supabase.auth.signOut()
-        
+
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
         })
-
-        // With "Confirm email" ON, Supabase returns error if email not verified
-        if (error?.message?.toLowerCase().includes('email not confirmed')) {
-            router.push(`/auth/verify?email=${encodeURIComponent(email)}`)
-            return { error }
-        }
 
         if (!error && data.user) {
             router.push('/dashboard')
@@ -80,7 +76,7 @@ export function useAuth() {
     const signUp = async ({ email, password, full_name, phone }: { email: string, password: string, full_name: string, phone: string }) => {
         // Clear any existing session first
         await supabase.auth.signOut()
-        
+
         const { error } = await supabase.auth.signUp({
             email,
             password,
@@ -89,7 +85,7 @@ export function useAuth() {
                     full_name,
                     phone,
                 },
-                emailRedirectTo: getRedirectTo('signup'),
+                emailRedirectTo: buildAuthCallbackUrl('signup'),
             },
         })
         return { error }
@@ -98,11 +94,11 @@ export function useAuth() {
     const signInWithOAuth = async (provider: 'google') => {
         // Clear any existing session first
         await supabase.auth.signOut()
-        
+
         const { error } = await supabase.auth.signInWithOAuth({
             provider,
             options: {
-                redirectTo: getRedirectTo(),
+                redirectTo: buildAuthCallbackUrl(),
             },
         })
         return { error }
@@ -132,6 +128,7 @@ export function useAuth() {
         signInWithOAuth,
         verifyOtp,
         resetPasswordForEmail,
+        sendRecoveryOtp,
         updatePassword,
         signOut,
     }

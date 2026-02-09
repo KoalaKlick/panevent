@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import {
     Form,
@@ -28,8 +28,8 @@ import {
     InputOTPSlot,
 } from "@/components/ui/input-otp"
 import { useAuth } from '@/hooks/use-auth'
-import { useState } from 'react'
-import { Mail, KeyRound, Loader2, ArrowLeft } from 'lucide-react'
+import { useState, Suspense } from 'react'
+import { KeyRound, Loader2, ArrowLeft, AlertCircle } from 'lucide-react'
 
 const EmailSchema = z.object({
     email: z.string().email({ message: 'Please enter a valid email address.' }),
@@ -39,13 +39,13 @@ const OtpSchema = z.object({
     otp: z.string().length(6, { message: 'Please enter the 6-digit code.' }),
 })
 
-type Method = 'link' | 'otp'
-type Step = 'email' | 'sent' | 'otp-verify'
+type Step = 'email' | 'otp-verify'
 
-export default function ForgotPasswordPage() {
-    const { resetPasswordForEmail, signInWithOtp, verifyOtp, loading } = useAuth()
+function ForgotPasswordContent() {
+    const { sendRecoveryOtp, verifyOtp, loading } = useAuth()
     const router = useRouter()
-    const [method, setMethod] = useState<Method>('link')
+    const searchParams = useSearchParams()
+    const expired = searchParams.get('expired') === 'true'
     const [step, setStep] = useState<Step>('email')
     const [email, setEmail] = useState('')
     const [submitting, setSubmitting] = useState(false)
@@ -64,64 +64,25 @@ export default function ForgotPasswordPage() {
         setSubmitting(true)
         setEmail(data.email)
 
-        if (method === 'link') {
-            const { error } = await resetPasswordForEmail(data.email)
-            if (error) {
-                emailForm.setError('root', { message: error.message })
-                setSubmitting(false)
-                return
-            }
-            setStep('sent')
-        } else {
-            const { error } = await signInWithOtp(data.email)
-            if (error) {
-                emailForm.setError('root', { message: error.message })
-                setSubmitting(false)
-                return
-            }
-            setStep('otp-verify')
+        const { error } = await sendRecoveryOtp(data.email)
+        if (error) {
+            emailForm.setError('root', { message: error.message })
+            setSubmitting(false)
+            return
         }
+        setStep('otp-verify')
         setSubmitting(false)
     }
 
     async function onOtpSubmit(data: z.infer<typeof OtpSchema>) {
         setSubmitting(true)
-        const { error } = await verifyOtp(email, data.otp, 'magiclink')
+        const { error } = await verifyOtp(email, data.otp, 'recovery')
         if (error) {
             otpForm.setError('root', { message: error.message })
             setSubmitting(false)
             return
         }
-        // OTP verified - user is now signed in, redirect to reset password
         router.push('/auth/reset-password')
-    }
-
-    // Step: Email sent (magic link)
-    if (step === 'sent') {
-        return (
-            <div className="flex items-center justify-center min-h-screen bg-secondary/30">
-                <Card className="w-100 text-center">
-                    <CardHeader>
-                        <div className="flex justify-center mb-4">
-                            <Mail className="h-16 w-16 text-primary" />
-                        </div>
-                        <CardTitle>Check Your Email</CardTitle>
-                        <CardDescription>
-                            We sent a password reset link to
-                            <strong className="block mt-1">{email}</strong>
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <p className="text-sm text-muted-foreground">
-                            Click the link in your email to reset your password.
-                        </p>
-                        <Button variant="outline" onClick={() => router.push('/auth/login')}>
-                            Back to Login
-                        </Button>
-                    </CardContent>
-                </Card>
-            </div>
-        )
     }
 
     // Step: OTP verification
@@ -191,27 +152,15 @@ export default function ForgotPasswordPage() {
             <Card className="w-100">
                 <CardHeader>
                     <CardTitle>Forgot Password</CardTitle>
-                    <CardDescription>Choose how you'd like to reset your password.</CardDescription>
+                    <CardDescription>Enter your email to receive a verification code.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <div className="flex gap-2">
-                        <Button
-                            type="button"
-                            variant={method === 'link' ? 'default' : 'outline'}
-                            className="flex-1"
-                            onClick={() => setMethod('link')}
-                        >
-                            <Mail className="h-4 w-4 mr-2" /> Email Link
-                        </Button>
-                        <Button
-                            type="button"
-                            variant={method === 'otp' ? 'default' : 'outline'}
-                            className="flex-1"
-                            onClick={() => setMethod('otp')}
-                        >
-                            <KeyRound className="h-4 w-4 mr-2" /> OTP Code
-                        </Button>
-                    </div>
+                    {expired && (
+                        <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 flex items-center gap-2">
+                            <AlertCircle className="h-4 w-4 text-amber-500" />
+                            <p className="text-sm text-amber-600">Session expired. Please request a new code.</p>
+                        </div>
+                    )}
 
                     <Form {...emailForm}>
                         <form onSubmit={emailForm.handleSubmit(onEmailSubmit)} className="space-y-4">
@@ -235,7 +184,7 @@ export default function ForgotPasswordPage() {
                             )}
                             <Button type="submit" className="w-full" disabled={submitting || loading}>
                                 {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                                {method === 'link' ? 'Send Reset Link' : 'Send OTP Code'}
+                                Send Code
                             </Button>
                         </form>
                     </Form>
@@ -248,5 +197,21 @@ export default function ForgotPasswordPage() {
                 </CardFooter>
             </Card>
         </div>
+    )
+}
+
+export default function ForgotPasswordPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex items-center justify-center min-h-screen bg-secondary/30">
+                <Card className="w-100">
+                    <CardContent className="py-8 text-center">
+                        <Loader2 className="h-8 w-8 animate-spin mx-auto" />
+                    </CardContent>
+                </Card>
+            </div>
+        }>
+            <ForgotPasswordContent />
+        </Suspense>
     )
 }

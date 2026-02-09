@@ -6,29 +6,27 @@ export async function GET(request: Request) {
     const code = searchParams.get('code')
     const token_hash = searchParams.get('token_hash')
     const type = searchParams.get('type')
-    
-    // Log for debugging
-    console.log('Auth callback received:', { code: !!code, token_hash: !!token_hash, type })
 
     const supabase = await createClient()
 
-    // Handle PKCE flow (code-based) - this is what Supabase uses by default
+    // Handle PKCE flow (code-based)
     if (code) {
         const { error } = await supabase.auth.exchangeCodeForSession(code)
         if (!error) {
             const redirectUrl = type === 'recovery' ? '/auth/reset-password' : '/auth/confirmed'
             return redirectTo(request, origin, redirectUrl)
         }
-        console.error('Code exchange error:', error)
-        
-        // PKCE mismatch - user likely opened link in different browser
-        // Email is still confirmed server-side, redirect to login
-        if (error.code === 'bad_code_verifier') {
+
+        // PKCE errors - redirect gracefully based on type
+        if (type === 'signup') {
             return NextResponse.redirect(`${origin}/auth/login?verified=true`)
+        }
+        if (type === 'recovery') {
+            return NextResponse.redirect(`${origin}/auth/forgot-password?expired=true`)
         }
     }
 
-    // Handle token_hash flow (older email confirmation format)
+    // Handle token_hash flow (older email format)
     if (token_hash && type) {
         const { error } = await supabase.auth.verifyOtp({
             token_hash,
@@ -38,12 +36,13 @@ export async function GET(request: Request) {
             const redirectUrl = type === 'recovery' ? '/auth/reset-password' : '/auth/confirmed'
             return redirectTo(request, origin, redirectUrl)
         }
-        console.error('Token verification error:', error)
+
+        // Token errors - redirect gracefully
+        if (type === 'recovery') {
+            return NextResponse.redirect(`${origin}/auth/forgot-password?expired=true`)
+        }
     }
 
-    // Log what we received for debugging
-    console.error('Auth callback failed. Params:', Object.fromEntries(searchParams.entries()))
-    
     return NextResponse.redirect(`${origin}/auth/auth-code-error`)
 }
 
