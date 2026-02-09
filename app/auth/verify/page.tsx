@@ -42,9 +42,18 @@ function VerificationContent() {
         setError('')
         
         const supabase = createClient()
-        const { data: { session } } = await supabase.auth.getSession()
         
-        if (session?.user?.email_confirmed_at) {
+        // getUser() fetches fresh data from server, unlike getSession() which uses cache
+        const { data: { user }, error: userError } = await supabase.auth.getUser()
+        
+        if (userError) {
+            // No user found - try login instead
+            setError('No account found. Please sign up or log in first.')
+            setChecking(false)
+            return
+        }
+        
+        if (user?.email_confirmed_at) {
             setStatus('verified')
             setTimeout(() => router.push('/dashboard'), 1000)
         } else {
@@ -97,6 +106,9 @@ function VerificationContent() {
             <CardContent className="space-y-4">
                 <p className="text-sm text-muted-foreground text-center">
                     Click the link in your email to verify, then come back here and press Continue.
+                </p>
+                <p className="text-xs text-muted-foreground text-center">
+                    <strong>Tip:</strong> Open the email link in this same browser for the best experience.
                 </p>
 
                 {error && (

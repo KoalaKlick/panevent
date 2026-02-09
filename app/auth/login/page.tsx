@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import {
     Form,
@@ -23,7 +23,8 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { useAuth } from '@/hooks/use-auth'
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
+import { CheckCircle } from 'lucide-react'
 
 const FormSchema = z.object({
     email: z.string().email({
@@ -34,9 +35,11 @@ const FormSchema = z.object({
     }),
 })
 
-export default function LoginPage() {
+function LoginForm() {
     const { signInWithPassword, signInWithOAuth, loading } = useAuth()
     const router = useRouter()
+    const searchParams = useSearchParams()
+    const verified = searchParams.get('verified') === 'true'
     const [submitting, setSubmitting] = useState(false)
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -67,17 +70,22 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-secondary/30">
-            <Card className="w-[350px]">
-                <CardHeader>
-                    <CardTitle>Sign In</CardTitle>
-                    <CardDescription>Enter your credentials to access your account.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                            <FormField
-                                control={form.control}
+        <Card className="w-[350px]">
+            <CardHeader>
+                <CardTitle>Sign In</CardTitle>
+                <CardDescription>Enter your credentials to access your account.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                {verified && (
+                    <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 mb-4 flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <p className="text-sm text-green-600">Email verified! You can now log in.</p>
+                    </div>
+                )}
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                        <FormField
+                            control={form.control}
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem>
@@ -136,12 +144,24 @@ export default function LoginPage() {
                         Google
                     </Button>
                 </CardContent>
-                <CardFooter className="justify-center">
+                <CardFooter className="flex-col gap-2">
                     <p className="text-sm text-muted-foreground">
                         Don't have an account? <a href="/auth/register" className="underline hover:text-primary">Sign up</a>
                     </p>
+                    <a href="/auth/forgot-password" className="text-sm text-muted-foreground underline hover:text-primary">
+                        Forgot password?
+                    </a>
                 </CardFooter>
             </Card>
+    )
+}
+
+export default function LoginPage() {
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-secondary/30">
+            <Suspense fallback={<Card className="w-[350px]"><CardContent className="py-8 text-center">Loading...</CardContent></Card>}>
+                <LoginForm />
+            </Suspense>
         </div>
     )
 }
