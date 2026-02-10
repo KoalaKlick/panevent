@@ -5,7 +5,6 @@ export default function AuthLayout({
   children,
 }: {
   readonly children: ReactNode
-  readonly header: ReactNode
 }) {
   return (
     <div className="min-h-screen bg-background flex flex-col lg:flex-row font-poppins">
