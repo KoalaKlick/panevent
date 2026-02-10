@@ -83,7 +83,10 @@ export default function AfricaMap({
 }: AfricaMapProps) {
     const [currentIdx, setCurrentIdx] = useState(0);
     const [isRevealed, setIsRevealed] = useState(false);
-    const [showInitialPulse, setShowInitialPulse] = useState(true);
+    const [transitionKey, setTransitionKey] = useState(0);
+    const [showPulse, setShowPulse] = useState(true);
+
+    const totalAnimationDuration = africaPaths.length * staggerDelay * 1000 + 600;
 
     // Stable randomized reveal order - computed once
     const revealOrder = useMemo(() => {
@@ -103,28 +106,38 @@ export default function AfricaMap({
 
     // Trigger reveal on mount
     useEffect(() => {
-        // Small delay to ensure CSS is ready
         const revealTimer = requestAnimationFrame(() => setIsRevealed(true));
-
-        // Hide pulse after animation completes
-        const pulseTimer = setTimeout(() => {
-            setShowInitialPulse(false);
-        }, africaPaths.length * staggerDelay * 1000 + 600);
+        const pulseTimer = setTimeout(() => setShowPulse(false), totalAnimationDuration);
 
         return () => {
             cancelAnimationFrame(revealTimer);
             clearTimeout(pulseTimer);
         };
-    }, [staggerDelay]);
+    }, [totalAnimationDuration]);
 
-    // Image cycling
+    // Image cycling with staggered transition
     useEffect(() => {
         if (images.length <= 1) return;
+        
+        const triggerReveal = () => setIsRevealed(true);
+        const scheduleReveal = () => requestAnimationFrame(triggerReveal);
+        
         const timer = setInterval(() => {
+            // Reset reveal state to trigger staggered animation
+            setIsRevealed(false);
+            setShowPulse(showTransitionColor);
+            setTransitionKey((prev) => prev + 1);
             setCurrentIdx((prev) => (prev + 1) % images.length);
+            
+            // Re-trigger reveal after a brief pause for CSS reset
+            requestAnimationFrame(scheduleReveal);
+            
+            // Hide pulse after animation completes
+            setTimeout(() => setShowPulse(false), totalAnimationDuration);
         }, interval);
+        
         return () => clearInterval(timer);
-    }, [images.length, interval]);
+    }, [images.length, interval, totalAnimationDuration, showTransitionColor]);
 
     // Calculate delay for each country
     const getRevealDelay = (originalIndex: number) => {
@@ -198,13 +211,13 @@ export default function AfricaMap({
                 <g id="africa-countries">
                     {africaPaths.map((country, idx) => (
                         <CountryPathComponent
-                            key={country.id}
+                            key={`${country.id}-${transitionKey}`}
                             country={country}
                             color={colorMap[idx]}
                             revealDelay={getRevealDelay(idx)}
                             currentImageIdx={currentIdx}
                             isRevealed={isRevealed}
-                            showColorPulse={showInitialPulse || showTransitionColor}
+                            showColorPulse={showPulse}
                             showHoverColor={showHoverColor}
                         />
                     ))}
