@@ -21,11 +21,11 @@ export default function AuthLayout({
         {/* Hero copy (matches AfroTix-style layout) */}
         <div className="absolute bottom-8 left-6 right-6 md:space-y-6 max-w-xl mx-auto pointer-events-none">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-2xl tracking-tight">Sankofa</span>
+            {/* <span className="font-bold text-2xl tracking-tight">Sankofa</span> */}
           </div>
 
           <p className="mt-2 text-xl sm:text-2xl font-medium text-foreground/80">
-            Discover and book the hottest events across the continent.
+            {/* Discover and book the hottest events across the continent. */}
           </p>
         </div>
       </div>
