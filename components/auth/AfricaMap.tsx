@@ -84,6 +84,7 @@ const CountryPathComponent = memo(function CountryPathComponent({
                     style={{ pointerEvents: "all" }}
                 />
             )}
+            <title>{country.name}</title>
         </g>
     );
 });
