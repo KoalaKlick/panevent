@@ -11,6 +11,7 @@ import { createClient } from '@/utils/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Loader2, CheckCircle } from 'lucide-react'
 import { OTPVerificationIllustration } from "@/components/auth/OTPVerificationIllustration"
+import { EmailVerifiedIllustration } from "@/components/auth/EmailVerifiedIllustration"
 
 function VerificationContent() {
     const router = useRouter()
@@ -86,7 +87,7 @@ function VerificationContent() {
         return (
             <div className="w-full text-center space-y-4 flex-1 flex flex-col justify-center">
                 <div className="flex justify-center">
-                    <CheckCircle className="h-16 w-16 text-green-500" />
+                    <EmailVerifiedIllustration className="size-24 text-green-500" />
                 </div>
                 <h1 className="text-2xl font-semibold tracking-tight">Email Verified!</h1>
                 <p className="text-sm text-muted-foreground">Redirecting to dashboard...</p>

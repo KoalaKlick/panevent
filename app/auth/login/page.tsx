@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import {
     Form,
@@ -18,6 +18,7 @@ import { useState, Suspense } from 'react'
 import { CheckCircle, Loader2, Mail, Lock } from 'lucide-react'
 import GoogleIcon from '@/app/assert/google-icon.svg'
 import Link from 'next/link'
+import { EmailVerifiedIllustration } from '@/components/auth/EmailVerifiedIllustration'
 
 const FormSchema = z.object({
     email: z.email({
@@ -31,6 +32,7 @@ const FormSchema = z.object({
 function LoginForm() {
     const { signInWithPassword, signInWithOAuth, loading } = useAuth()
     const searchParams = useSearchParams()
+    const router = useRouter()
     const verified = searchParams.get('verified') === 'true'
     const [submitting, setSubmitting] = useState(false)
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -50,8 +52,17 @@ function LoginForm() {
         setSubmitting(false)
 
         if (error) {
+            // Check if email is not confirmed (status 400 with specific message/code)
+            const isEmailNotConfirmed =
+                error.code === 'email_not_confirmed' ||
+                error.message.toLowerCase().includes('email not confirmed')
+
+            if (isEmailNotConfirmed) {
+                router.push(`/auth/verify?email=${encodeURIComponent(data.email)}`)
+                return
+            }
             form.setError('root', { message: error.message })
-            return null
+            return
         }
     }
 
@@ -63,7 +74,7 @@ function LoginForm() {
         <div className="space-y-6">
             {verified && (
                 <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    <EmailVerifiedIllustration className="size-24 text-green-500" />
                     <p className="text-sm text-green-600">Email verified! You can now log in.</p>
                 </div>
             )}
