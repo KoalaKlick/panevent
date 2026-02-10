@@ -151,7 +151,7 @@ export default function AfricaMap({
         const revealTimer = setTimeout(() => {
             setInitialReveal(true);
         }, 100); // Small delay to show colors first
-        
+
         const pulseTimer = setTimeout(() => setShowPulse(false), totalAnimationDuration + 100);
         return () => {
             clearTimeout(revealTimer);
