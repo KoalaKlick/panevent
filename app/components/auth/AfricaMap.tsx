@@ -105,7 +105,7 @@ export default function AfricaMap({
     useEffect(() => {
         // Small delay to ensure CSS is ready
         const revealTimer = requestAnimationFrame(() => setIsRevealed(true));
-        
+
         // Hide pulse after animation completes
         const pulseTimer = setTimeout(() => {
             setShowInitialPulse(false);
