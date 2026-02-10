@@ -100,17 +100,28 @@ export default function AfricaMap({
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [showPulse, setShowPulse] = useState(true);
     const [initialReveal, setInitialReveal] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
     const totalAnimationDuration = africaPaths.length * staggerDelay * 1000 + 600;
 
-    // Stable randomized reveal order - computed once
+    // Stable randomized reveal order - computed once on client only to avoid hydration mismatch
     const revealOrder = useMemo(() => {
+        if (!isMounted) {
+            // Return sequential order for SSR to ensure hydration match
+            return africaPaths.map((_, i) => i);
+        }
+        // Randomize only on client after mount
         const indices = africaPaths.map((_, i) => i);
         for (let i = indices.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [indices[i], indices[j]] = [indices[j], indices[i]];
         }
         return indices;
+    }, [isMounted]);
+
+    // Set mounted state on client
+    useEffect(() => {
+        setIsMounted(true);
     }, []);
 
     // Colors per country
